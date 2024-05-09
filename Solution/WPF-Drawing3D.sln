@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sln", ".sln", "{B465C356-0
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "H.Test.Nuget", "..\Source\Test\H.Test.Nuget\H.Test.Nuget.csproj", "{039E50DD-0E02-4F05-AA71-F28C9C333AD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,10 @@ Global
 		{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{039E50DD-0E02-4F05-AA71-F28C9C333AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{039E50DD-0E02-4F05-AA71-F28C9C333AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{039E50DD-0E02-4F05-AA71-F28C9C333AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{039E50DD-0E02-4F05-AA71-F28C9C333AD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{9F8E62BE-3772-4404-8576-E23B39118CD1} = {B0DD462F-E99C-4EF2-81AA-057B41B1FDF8}
 		{13C4D142-4F11-44C1-84E9-B9F377E88D19} = {A3C3BC6F-0B45-46B6-BF29-D39438F27870}
 		{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F} = {EE5D73C3-B71F-4CBD-AE1A-B5B29F944B53}
+		{039E50DD-0E02-4F05-AA71-F28C9C333AD0} = {DA0533D6-1E2D-49CB-928F-C58FE9565204}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E4F17D4-F468-4916-A895-7A4CE9E44459}

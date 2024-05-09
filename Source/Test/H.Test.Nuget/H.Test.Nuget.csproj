@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Drawable\H.Drawing3D.Drawable\H.Drawing3D.Drawable.csproj" />
+    <ProjectReference Include="..\..\Shape\H.Drawing3D.Shape.File\H.Drawing3D.Shape.File.csproj" />
+  </ItemGroup>
+
+</Project>
