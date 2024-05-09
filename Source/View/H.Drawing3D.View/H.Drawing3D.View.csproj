@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Folder Include="View\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Layer\H.Drawing3D.ShapeLayer\H.Drawing3D.ShapeLayer.csproj" />
+  </ItemGroup>
+</Project>

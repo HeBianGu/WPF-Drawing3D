@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net8.0-windows</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="0_0_0.jpg" />
+    <None Remove="f8148f6fad06eafb6f67cc6dc87801a0.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.Controls.PropertyGrid" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Drawable\H.Drawing3D.Drawable\H.Drawing3D.Drawable.csproj" />
+    <ProjectReference Include="..\..\Shape\H.Drawing3D.Shape.ExtrudeText\H.Drawing3D.Shape.ExtrudeText.csproj" />
+    <ProjectReference Include="..\..\Shape\H.Drawing3D.Shape.File\H.Drawing3D.Shape.File.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="0_0_0.jpg" />
+    <Resource Include="f8148f6fad06eafb6f67cc6dc87801a0.jpg" />
+  </ItemGroup>
+
+</Project>

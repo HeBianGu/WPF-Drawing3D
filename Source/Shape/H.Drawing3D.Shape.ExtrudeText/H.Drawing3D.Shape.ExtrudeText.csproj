@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\WPF-Drawing2D\Source\Api\H.Drawing2D.Api.Triangle\H.Drawing2D.Api.Triangle.csproj" />
+    <ProjectReference Include="..\H.Drawing3D.Shape\H.Drawing3D.Shape.csproj" />
+  </ItemGroup>
+</Project>

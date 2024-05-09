@@ -1,0 +1,509 @@
+﻿<Window x:Class="H.Test.Draw3D.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:h="https://github.com/HeBianGu"
+        xmlns:local="clr-namespace:H.Test.Draw3D"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="MainWindow"
+        Width="1000"
+        Height="850"
+        mc:Ignorable="d">
+    <TabControl TabStripPlacement="Left">
+        <TabItem Header="FileModelShape3D">
+            <TabControl TabStripPlacement="Left">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ShapeView3D Shape3D="{Binding}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+                <FileModelShape3D Source="E:\3D\models\OBJ\spider.obj"/>
+                <FileModelShape3D Source="E:\3D\helix\Models\obj\wall12.obj"/>
+            </TabControl>
+        </TabItem>
+        <TabItem Header="Presenter2DCubeShape3D">
+            <LayerView3D>
+                <ShapesLayer>
+                    <local:Presenter2DCubeShape3D Center="20 20 20"
+                                                  SideLength="20" />
+                </ShapesLayer>
+                <DrawableShapeLayer />
+            </LayerView3D>
+        </TabItem>
+        <TabItem Header="DrawablePresenterShapeLayer">
+            <LayerView3D>
+                <ShapesLayer>
+                    <ArrowShape3D />
+                    <ArrowShape3D Point1="1,2,3"
+                                  Point2="3,5,7" />
+                    <ArrowShape3D Point2="3,0,0" />
+                    <ArrowShape3D Point2="0,5,0" />
+                    <ArrowShape3D Point2="0,0,7" />
+                    <ArrowShape3D Point2="-3,0,0" />
+                    <ArrowShape3D Point2="0,-5,0" />
+                    <ArrowShape3D Point2="0,0,-7" />
+                    <TextShape3D Text="河边骨" />
+                    <CoordinateSystemShape3D ArrowLengths="10" />
+                </ShapesLayer>
+                <DrawablePresenterShapeLayer />
+            </LayerView3D>
+        </TabItem>
+        <TabItem Header="Manipulatable">
+            <LayerView3D>
+                <ShapesLayer>
+                    <!--<ArrowShape3D />
+                    <ArrowShape3D Point1="1,2,3"
+                             Point2="3,5,7" />
+                    <ArrowShape3D Point2="3,0,0" />
+                    <ArrowShape3D Point2="0,5,0" />-->
+                    <!--<local:ManipulatableEllipsoidShape3D RadiusX="0.5"
+                                                         RadiusY="0.5"
+                                                         RadiusZ="0.5" />-->
+
+                    <local:ManipulatableCubeShape3D Center="20 20 20"
+                                                    SideLength="20" />
+
+                    <!--<CoordinateSystemShape3D ArrowLengths="10" />-->
+                    <!--<EllipsoidShape3D/>-->
+                </ShapesLayer>
+                <DrawableShapeLayer />
+            </LayerView3D>
+        </TabItem>
+
+        <TabItem Header="DrawableShapeLayer">
+            <LayerView3D>
+                <ShapesLayer>
+                    <ArrowShape3D />
+                    <ArrowShape3D Point1="1,2,3"
+                                  Point2="3,5,7" />
+                    <ArrowShape3D Point2="3,0,0" />
+                    <ArrowShape3D Point2="0,5,0" />
+                    <ArrowShape3D Point2="0,0,7" />
+                    <ArrowShape3D Point2="-3,0,0" />
+                    <ArrowShape3D Point2="0,-5,0" />
+                    <ArrowShape3D Point2="0,0,-7" />
+                    <TextShape3D Text="河边骨" />
+                    <CoordinateSystemShape3D ArrowLengths="10" />
+                </ShapesLayer>
+                <DrawableShapeLayer />
+            </LayerView3D>
+        </TabItem>
+        <TabItem Header="LayerView3D">
+            <LayerView3D>
+                <ShapesLayer>
+                    <ArrowShape3D />
+                    <ArrowShape3D Point1="1,2,3"
+                                  Point2="3,5,7" />
+                    <ArrowShape3D Point2="3,0,0" />
+                    <ArrowShape3D Point2="0,5,0" />
+                    <ArrowShape3D Point2="0,0,7" />
+                </ShapesLayer>
+                <ShapesLayer>
+                    <ArrowShape3D Point2="-3,0,0" />
+                    <ArrowShape3D Point2="0,-5,0" />
+                    <ArrowShape3D Point2="0,0,-7" />
+                </ShapesLayer>
+            </LayerView3D>
+        </TabItem>
+        <TabItem Header="Game">
+            <GameShapesView3D>
+                <local:GameArrowShape3D />
+            </GameShapesView3D>
+        </TabItem>
+        <TabItem Header="MouseOver">
+            <MouseOverableShapesView3D>
+                <GridLinesShape3D />
+                <ArrowShape3D />
+                <ArrowShape3D Point1="1,2,3"
+                              Point2="3,5,7" />
+                <ArrowShape3D Point2="3,0,0" />
+                <ArrowShape3D Point2="0,5,0" />
+                <ArrowShape3D Point2="0,0,7" />
+                <ArrowShape3D Point2="-3,0,0" />
+                <ArrowShape3D Point2="0,-5,0" />
+                <ArrowShape3D Point2="0,0,-7" />
+            </MouseOverableShapesView3D>
+        </TabItem>
+        <TabItem Header="命中测试">
+            <ShapesView3D x:Name="sv2"
+                          PreviewMouseDown="sv2_MouseDown">
+                <!--<GridLinesShape3D />-->
+                <ArrowShape3D />
+            </ShapesView3D>
+        </TabItem>
+        <TabItem Header="选择和定位工具">
+            <DockPanel>
+                <ListBox ItemsSource="{Binding ElementName=sv1, Path=Shapes}"
+                         MouseDoubleClick="ListBox_MouseDoubleClick"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="LightGray"
+                                    CornerRadius="2">
+                                <Grid>
+                                    <ShapeView3D Width="50"
+                                                 Height="50"
+                                                 IsHitTestVisible="False"
+                                                 Shape3D="{Binding}" />
+                                    <TextBlock HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="Red"
+                                               Text="{Binding Name}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+                <!--<ListBox Width="200"
+                         DockPanel.Dock="Right"
+                         ItemsSource="{Binding ElementName=sv1, Path=SelectedShapes}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ShapeView3D Width="100"
+                                             Height="100"
+                                             IsHitTestVisible="False"
+                                             Shape3D="{Binding}" />
+                                <TextBlock HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Foreground="Red"
+                                           Text="{Binding Name}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>-->
+                <Grid>
+                    <SelectableShapesView3D x:Name="sv1">
+                        <GridLinesShape3D />
+                        <ArrowShape3D />
+                        <ArrowShape3D Point1="1,2,3"
+                                      Point2="3,5,7" />
+                        <ArrowShape3D Point2="3,0,0" />
+                        <ArrowShape3D Point2="0,5,0" />
+                        <ArrowShape3D Point2="0,0,7" />
+                        <ArrowShape3D Point2="-3,0,0" />
+                        <ArrowShape3D Point2="0,-5,0" />
+                        <ArrowShape3D Point2="0,0,-7" />
+                    </SelectableShapesView3D>
+                </Grid>
+            </DockPanel>
+        </TabItem>
+
+        <TabItem Header="相机工具">
+            <DockPanel>
+                <h:PropertyGrid Width="350"
+                                DockPanel.Dock="Right"
+                                HideInheritedProperties="False"
+                                SelectedObject="{Binding ElementName=sv}" />
+                <Grid>
+                    <ShapeView3D x:Name="sv">
+                        <ShapeGroupShape3D>
+                            <GridLinesShape3D />
+                            <ArrowShape3D />
+                            <ArrowShape3D Point1="1,2,3"
+                                          Point2="3,5,7" />
+                            <ArrowShape3D Point2="3,0,0" />
+                            <ArrowShape3D Point2="0,5,0" />
+                            <ArrowShape3D Point2="0,0,7" />
+                            <ArrowShape3D Point2="-3,0,0" />
+                            <ArrowShape3D Point2="0,-5,0" />
+                            <ArrowShape3D Point2="0,0,-7" />
+                        </ShapeGroupShape3D>
+                    </ShapeView3D>
+                    <WrapPanel HorizontalAlignment="Left"
+                               VerticalAlignment="Bottom">
+                        <Button Command="{x:Static CameraController.ZoomCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="ZoomCommand" />
+                        <Button Command="{x:Static CameraController.ZoomExtentsCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="ZoomExtentsCommand" />
+                        <Button Command="{x:Static CameraController.ResetCameraCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="ResetCameraCommand" />
+
+                        <Button Command="{x:Static CameraController.TopViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="TopViewCommand" />
+
+                        <Button Command="{x:Static CameraController.RightViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="RightViewCommand" />
+
+                        <Button Command="{x:Static CameraController.LeftViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="LeftViewCommand" />
+
+                        <Button Command="{x:Static CameraController.FrontViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="FrontViewCommand" />
+
+                        <Button Command="{x:Static CameraController.BottomViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="BottomViewCommand" />
+
+
+                        <Button Command="{x:Static CameraController.BackViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="BackViewCommand" />
+
+                        <Button Command="{x:Static CameraController.ChangeLookAtCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="ChangeLookAtCommand" />
+
+
+                        <Button Command="{x:Static CameraController.PanCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="PanCommand" />
+
+                        <Button Command="{x:Static CameraController.RotateCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="RotateCommand" />
+
+
+                        <Button Command="{x:Static CameraController.ZoomRectangleCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="ZoomRectangleCommand" />
+
+
+                        <Button Command="{x:Static CameraController.ChangeFieldOfViewCommand}"
+                                CommandTarget="{Binding ElementName=sv}"
+                                Content="ChangeFieldOfViewCommand" />
+
+                    </WrapPanel>
+
+                    <!--<ItemsControl HorizontalAlignment="Left"
+                              VerticalAlignment="Bottom"
+                              ItemsSource="{Binding ElementName=sv, Path=CommandBindings}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding}"
+                                    CommandTarget="{Binding ElementName=sv}"
+                                    Content="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>-->
+                </Grid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="CameraViewport3D">
+            <TabControl>
+                <TabItem Header="Viewport2DVisual3D">
+                    <CameraViewport3D>
+                        <Viewport2DVisual3D>
+                            <!--  Give the plane a slight rotation  -->
+                            <Viewport2DVisual3D.Transform>
+                                <RotateTransform3D>
+                                    <RotateTransform3D.Rotation>
+                                        <AxisAngleRotation3D Angle="40"
+                                                             Axis="0, 1, 0" />
+                                    </RotateTransform3D.Rotation>
+                                </RotateTransform3D>
+                            </Viewport2DVisual3D.Transform>
+
+                            <!--  The Geometry, Material, and Visual for the Viewport2DVisual3D  -->
+                            <Viewport2DVisual3D.Geometry>
+                                <MeshGeometry3D Positions="-1,1,0 -1,-1,0 1,-1,0 1,1,0"
+                                                TextureCoordinates="0,0 0,1 1,1 1,0"
+                                                TriangleIndices="0 1 2 0 2 3" />
+                            </Viewport2DVisual3D.Geometry>
+
+                            <Viewport2DVisual3D.Material>
+                                <DiffuseMaterial Brush="White"
+                                                 Viewport2DVisual3D.IsVisualHostMaterial="True" />
+                            </Viewport2DVisual3D.Material>
+
+                            <Button>Hello, 3D</Button>
+                        </Viewport2DVisual3D>
+                    </CameraViewport3D>
+
+                </TabItem>
+                <TabItem Header="MaterialBrush">
+                    <CameraViewport3D>
+                        <ModelVisual3D>
+                            <local:Sphere PhiDiv="20"
+                                          Radius="1"
+                                          ThetaDiv="20">
+                                <local:Sphere.MaterialBrush>
+                                    <ImageBrush ImageSource="0_0_0.jpg" />
+                                </local:Sphere.MaterialBrush>
+                            </local:Sphere>
+                            <local:Sphere PhiDiv="20"
+                                          Radius="30"
+                                          ThetaDiv="20">
+                                <local:Sphere.MaterialBrush>
+                                    <ImageBrush ImageSource="0_0_0.jpg" />
+                                </local:Sphere.MaterialBrush>
+                                <local:Sphere.BackMaterialBrush>
+                                    <ImageBrush ImageSource="f8148f6fad06eafb6f67cc6dc87801a0.jpg" />
+                                </local:Sphere.BackMaterialBrush>
+                            </local:Sphere>
+                        </ModelVisual3D>
+                    </CameraViewport3D>
+                </TabItem>
+                <TabItem Header="MaterialBrush">
+                    <CameraViewport3D>
+                        <ModelVisual3D>
+                            <local:Sphere PhiDiv="20"
+                                          Radius="0.5"
+                                          ThetaDiv="20">
+                                <!--<local:Sphere.MaterialBrush>
+                                    <ImageBrush ImageSource="D:\GitHub\WPF-Map\Source\Controls\H.Map.Google\Data\0_0_0.jpg" />
+                                </local:Sphere.MaterialBrush>-->
+                            </local:Sphere>
+                        </ModelVisual3D>
+                    </CameraViewport3D>
+                </TabItem>
+            </TabControl>
+        </TabItem>
+        <TabItem Header="CameraViewport3D">
+            <CameraViewport3D>
+                <CameraViewport3D.InputBindings>
+                    <MouseBinding Command="{x:Static CameraController.RotateCommand}"
+                                  Gesture="RightClick" />
+                    <MouseBinding Command="{x:Static CameraController.PanCommand}"
+                                  Gesture="Shift+RightClick" />
+                    <MouseBinding Command="{x:Static CameraController.ZoomCommand}"
+                                  Gesture="Ctrl+RightClick" />
+                    <!--<MouseBinding Gesture="Ctrl+Shift+RightClick" Command="{x:Static local:CameraController.ZoomRectangleCommand}"/>-->
+                    <MouseBinding Command="{x:Static CameraController.ChangeFieldOfViewCommand}"
+                                  Gesture="Alt+RightClick" />
+                    <MouseBinding Command="{x:Static CameraController.ChangeLookAtCommand}"
+                                  Gesture="RightDoubleClick" />
+                    <KeyBinding Key="E"
+                                Command="{x:Static CameraController.ZoomExtentsCommand}"
+                                Modifiers="Ctrl+Shift" />
+                    <MouseBinding Command="{x:Static CameraController.ResetCameraCommand}"
+                                  Gesture="MiddleDoubleClick" />
+                    <!--<local:InputBindingX Command="{x:Static local:CameraController.ResetCameraCommand}"
+                          Gezture="{Binding ResetCameraKeyGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.RotateCommand}"
+                          Gezture="{Binding RotateGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.RotateCommand}"
+                          Gezture="{Binding RotateGesture2, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.PanCommand}"
+                          Gezture="{Binding PanGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.PanCommand}"
+                          Gezture="{Binding PanGesture2, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ZoomCommand}"
+                          Gezture="{Binding ZoomGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ZoomCommand}"
+                          Gezture="{Binding ZoomGesture2, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ZoomRectangleCommand}"
+                          Gezture="{Binding ZoomRectangleGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ChangeFieldOfViewCommand}"
+                          Gezture="{Binding ChangeFieldOfViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ChangeLookAtCommand}"
+                          Gezture="{Binding ChangeLookAtGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ZoomExtentsCommand}"
+                          Gezture="{Binding ZoomExtentsGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.ResetCameraCommand}"
+                          Gezture="{Binding ResetCameraGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.TopViewCommand}"
+                          Gezture="{Binding TopViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.BottomViewCommand}"
+                          Gezture="{Binding BottomViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.LeftViewCommand}"
+                          Gezture="{Binding LeftViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.RightViewCommand}"
+                          Gezture="{Binding RightViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.FrontViewCommand}"
+                          Gezture="{Binding FrontViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />
+     <local:InputBindingX Command="{x:Static local:CameraController.BackViewCommand}"
+                          Gezture="{Binding BackViewGesture, RelativeSource={RelativeSource TemplatedParent}}" />-->
+                    <!--<local:InputBindingX Command="{x:Static local:HelixViewport3D.OrthographicToggleCommand}"
+                          Gezture="{Binding OrthographicToggleGesture, RelativeSource={RelativeSource TemplatedParent}}" />-->
+                </CameraViewport3D.InputBindings>
+                <!--<CameraController.DefaultCamera>
+             <PerspectiveCamera  />
+         </CameraController.DefaultCamera>-->
+                <ModelVisual3D>
+                    <local:Sphere MaterialBrush="Purple"
+                                  PhiDiv="20"
+                                  Radius="0.5"
+                                  ThetaDiv="20" />
+                    <ModelVisual3D.Content>
+                        <AmbientLight Color="Yellow" />
+                        <!--<DirectionalLight Direction="-1,-1,-1"
+                                          Color="White" />-->
+                    </ModelVisual3D.Content>
+
+                </ModelVisual3D>
+            </CameraViewport3D>
+        </TabItem>
+        <TabItem Header="ShapeView3D">
+            <ShapeView3D>
+                <SphereShape3D ThetaDiv="100" />
+            </ShapeView3D>
+        </TabItem>
+        <TabItem Header="LayerView3D">
+            <LayerView3D>
+                <ShapesLayer>
+                    <SphereShape3D />
+                    <!--<SphereShape3D ThetaDiv="15" PhiDiv="50" Radius="41"/>-->
+                    <SSShape3D />
+
+                </ShapesLayer>
+            </LayerView3D>
+        </TabItem>
+        <TabItem Header="Shape3Ds">
+            <TabControl TabStripPlacement="Left">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ShapeView3D Shape3D="{Binding}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+                <EllipsoidShape3D />
+                <TruncatedConeShape3D />
+                <TorusShape3D />
+                <RectangleShape3D />
+                <QuadShape3D />
+                <PipeShape3D />
+                <CubeShape3D />
+                <ArrowShape3D />
+                <GridLinesShape3D />
+                <ShapeGroupShape3D>
+                    <GridLinesShape3D />
+                    <ArrowShape3D />
+                </ShapeGroupShape3D>
+                <TestGroupShape3D />
+                <PolyLineShape3D />
+                <TestMeshGeometryShape3D />
+                <BoundingBoxShape3D BoundingBox="0,0,0,1,1,1 " />
+                <CoordinateSystemShape3D />
+                <TextShape3D Text="HeBianGu" />
+                <PolyLineShape3D Points="0,0,0 0,1,0 0,1,1 1,4,2 6,7,8" />
+                <ShapeGroupShape3D Name="坐标轴">
+                    <AxisBoundingBoxShape3D />
+                    <CoordinateSystemShape3D />
+                    <EllipsoidShape3D Center="5,5,5"
+                                      RadiusX="3"
+                                      RadiusY="3"
+                                      RadiusZ="3">
+                        <EllipsoidShape3D.Material>
+                            <DiffuseMaterial>
+                                <DiffuseMaterial.Brush>
+                                    <SolidColorBrush Opacity="0.5"
+                                                     Color="Orange" />
+                                </DiffuseMaterial.Brush>
+                            </DiffuseMaterial>
+                        </EllipsoidShape3D.Material>
+                    </EllipsoidShape3D>
+                </ShapeGroupShape3D>
+                <ExtrudeTextShape3D />
+            </TabControl>
+        </TabItem>
+    </TabControl>
+</Window>

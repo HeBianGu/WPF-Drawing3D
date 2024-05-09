@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\View\H.Drawing3D.View\H.Drawing3D.View.csproj" />
+  </ItemGroup>
+</Project>
