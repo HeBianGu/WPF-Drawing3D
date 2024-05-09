@@ -2,6 +2,7 @@
 
 using H.Drawing3D.Shape;
 using H.Drawing3D.Shape.Base;
+using System;
 using System.Windows.Media.Media3D;
 
 namespace H.Test.Draw3D

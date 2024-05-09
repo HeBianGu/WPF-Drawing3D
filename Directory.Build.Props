@@ -5,8 +5,8 @@
     <!--<TargetFrameworks>net48;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <TargetFrameworks>net45;net48;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <TargetFrameworks>net48;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <LangVersion>10.0</LangVersion>
     <Version>1.0.0</Version>
     <FileVersion>1.0.0</FileVersion>

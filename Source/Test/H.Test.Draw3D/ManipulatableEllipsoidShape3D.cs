@@ -3,6 +3,7 @@
 using H.Drawing3D.Drawable;
 using H.Drawing3D.Drawable.Manipulators;
 using H.Drawing3D.Shape;
+using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 

@@ -2,6 +2,8 @@
 using H.Drawing3D.Shape.Base;
 using H.Drawing3D.View;
 using H.Drawing3D.View.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
