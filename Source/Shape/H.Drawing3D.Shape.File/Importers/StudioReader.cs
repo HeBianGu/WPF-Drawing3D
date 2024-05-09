@@ -7,6 +7,38 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+/* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+在此之前:
+using System;
+在此之后:
+using HelixToolkit.Wpf;
+using System;
+*/
+
+/* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+在此之前:
+using System;
+在此之后:
+using HelixToolkit.Wpf;
+using System;
+*/
+
+/* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+在此之前:
+using System;
+在此之后:
+using HelixToolkit.Wpf;
+using System;
+*/
+
+/* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+在此之前:
+using System;
+在此之后:
+using HelixToolkit.Wpf;
+using System;
+*/
+using HelixToolkit.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +49,33 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 
+/* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+在此之前:
+namespace HelixToolkit.Wpf
+在此之后:
+namespace H.Drawing3D.Shape.File.Importers
+*/
+
+/* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+在此之前:
+namespace HelixToolkit.Wpf
+在此之后:
+namespace H.Drawing3D.Shape.File.Importers
+*/
+
+/* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+在此之前:
+namespace HelixToolkit.Wpf
+在此之后:
+namespace H.Drawing3D.Shape.File.Importers
+*/
+
+/* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+在此之前:
+namespace HelixToolkit.Wpf
+在此之后:
+namespace H.Drawing3D.Shape.File.Importers
+*/
 namespace H.Drawing3D.Shape.File.Importers
 {
     /// <summary>
@@ -32,12 +91,12 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <summary>
         /// The materials.
         /// </summary>
-        private readonly Dictionary<string, Material> materials = new();
+        private readonly Dictionary<string, Material> materials = new Dictionary<string, Material>();
 
         /// <summary>
         /// The meshes.
         /// </summary>
-        private readonly List<Mesh> meshes = new();
+        private readonly List<Mesh> meshes = new List<Mesh>();
 
         /// <summary>
         /// The chunk id.
@@ -162,7 +221,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <returns>The model.</returns>
         public override Model3DGroup Read(Stream s)
         {
-            using BinaryReader reader = new(s);
+            using BinaryReader reader = new BinaryReader(s);
             long length = reader.BaseStream.Length;
 
             // http://gpwiki.org/index.php/Loading_3ds_files
@@ -170,9 +229,7 @@ namespace H.Drawing3D.Shape.File.Importers
             // http://sandy.googlecode.com/svn/trunk/sandy/as3/branches/3.0.2/src/sandy/parser/Parser3DS.as
             ChunkID headerId = this.ReadChunkId(reader);
             if (headerId != ChunkID.MAIN3DS)
-            {
                 throw new FileFormatException("Unknown file");
-            }
 
             int headerSize = this.ReadChunkSize(reader);
             //if (headerSize != length)
@@ -218,17 +275,13 @@ namespace H.Drawing3D.Shape.File.Importers
                     {
                         Model3D model = m.CreateModel();
                         if (this.Freeze)
-                        {
                             model.Freeze();
-                        }
 
                         mg.Children.Add(model);
                     }
 
                     if (this.Freeze)
-                    {
                         mg.Freeze();
-                    }
                 });
             return mg;
         }
@@ -337,7 +390,7 @@ namespace H.Drawing3D.Shape.File.Importers
         private List<int> ReadFaceList(BinaryReader reader)
         {
             int size = reader.ReadUInt16();
-            List<int> faces = new(size * 3);
+            List<int> faces = new List<int>(size * 3);
             for (int i = 0; i < size; i++)
             {
                 faces.Add(reader.ReadUInt16());
@@ -364,7 +417,7 @@ namespace H.Drawing3D.Shape.File.Importers
         private List<FaceSet> ReadFaceSets(BinaryReader reader, int chunkSize)
         {
             int total = 6;
-            List<FaceSet> list = new();
+            List<FaceSet> list = new List<FaceSet>();
             while (total < chunkSize)
             {
                 ChunkID id = this.ReadChunkId(reader);
@@ -376,13 +429,13 @@ namespace H.Drawing3D.Shape.File.Importers
                         {
                             string name = this.ReadString(reader);
                             int n = reader.ReadUInt16();
-                            List<int> c = new();
+                            List<int> c = new List<int>();
                             for (int i = 0; i < n; i++)
                             {
                                 c.Add(reader.ReadUInt16());
                             }
 
-                            FaceSet fm = new() { Name = name, Faces = c };
+                            FaceSet fm = new FaceSet { Name = name, Faces = c };
                             list.Add(fm);
                             break;
                         }
@@ -499,29 +552,25 @@ namespace H.Drawing3D.Shape.File.Importers
 
             this.Dispatch(() =>
                     {
-                        MaterialGroup mg = new();
+                        MaterialGroup mg = new MaterialGroup();
 
                         // mg.Children.Add(new DiffuseMaterial(new SolidColorBrush(luminance)));
                         if (texture != null)
                         {
                             string ext = Path.GetExtension(texture);
                             if (ext != null)
-                            {
                                 ext = ext.ToLower();
-                            }
 
                             // TGA not supported - convert textures to .png!
                             if (ext == ".tga")
-                            {
                                 texture = Path.ChangeExtension(texture, ".png");
-                            }
 
                             string actualTexturePath = this.TexturePath ?? string.Empty;
                             string path = Path.GetFullPath(Path.Combine(actualTexturePath, texture));
                             if (System.IO.File.Exists(path))
                             {
-                                BitmapImage img = new(new Uri(path));
-                                ImageBrush textureBrush = new(img)
+                                BitmapImage img = new BitmapImage(new Uri(path));
+                                ImageBrush textureBrush = new ImageBrush(img)
                                 {
                                     ViewportUnits = BrushMappingMode.Absolute,
                                     TileMode = TileMode.Tile
@@ -541,9 +590,7 @@ namespace H.Drawing3D.Shape.File.Importers
 
                         mg.Children.Add(new SpecularMaterial(new SolidColorBrush(specular), specularPower));
                         if (name != null)
-                        {
                             this.materials[name] = mg;
-                        }
                     });
         }
 
@@ -595,14 +642,12 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private string ReadString(BinaryReader reader)
         {
-            StringBuilder sb = new();
+            StringBuilder sb = new StringBuilder();
             while (true)
             {
                 char ch = (char)reader.ReadByte();
                 if (ch == 0)
-                {
                     break;
-                }
 
                 _ = sb.Append(ch);
             }
@@ -622,7 +667,7 @@ namespace H.Drawing3D.Shape.File.Importers
         private List<Point> ReadTexCoords(BinaryReader reader)
         {
             int size = reader.ReadUInt16();
-            List<Point> pts = new(size);
+            List<Point> pts = new List<Point>(size);
             for (int i = 0; i < size; i++)
             {
                 float x = reader.ReadSingle();
@@ -649,7 +694,7 @@ namespace H.Drawing3D.Shape.File.Importers
             Vector3D localz = this.ReadVector(reader);
             Vector3D origin = this.ReadVector(reader);
 
-            Matrix3D matrix = new()
+            Matrix3D matrix = new Matrix3D
             {
                 M11 = localx.X,
                 M21 = localx.Y,
@@ -725,10 +770,8 @@ namespace H.Drawing3D.Shape.File.Importers
                             }*/
 
             if (faces == null)
-            {
                 // face list not specified?
                 return;
-            }
 
             if (faceSets == null || faceSets.Count == 0)
             {
@@ -744,16 +787,13 @@ namespace H.Drawing3D.Shape.File.Importers
                 return;
             }
 
-
             foreach (FaceSet fm in faceSets)
             {
                 List<int> triangleIndices = ConvertFaceIndices(fm.Faces, faces);
 
                 Material mat = null;
                 if (this.materials.ContainsKey(fm.Name))
-                {
                     mat = this.materials[fm.Name];
-                }
 
                 this.meshes.Add(new Mesh { Positions = positions, TriangleIndices = triangleIndices, TextureCoordinates = textureCoordinates, Material = mat, BackMaterial = mat });
             }
@@ -761,7 +801,7 @@ namespace H.Drawing3D.Shape.File.Importers
 
         private static List<int> ConvertFaceIndices(List<int> subFaces, List<int> faces)
         {
-            List<int> triangleIndices = new(subFaces.Count * 3);
+            List<int> triangleIndices = new List<int>(subFaces.Count * 3);
             foreach (int f in subFaces)
             {
                 triangleIndices.Add(faces[f * 3]);
@@ -783,15 +823,13 @@ namespace H.Drawing3D.Shape.File.Importers
 
             public Model3D CreateModel()
             {
-                MeshGeometry3D geometry = new()
+                MeshGeometry3D geometry = new MeshGeometry3D
                 {
                     Positions = new Point3DCollection(this.Positions),
                     TriangleIndices = new Int32Collection(this.TriangleIndices)
                 };
                 if (this.TextureCoordinates != null)
-                {
                     geometry.TextureCoordinates = new PointCollection(this.TextureCoordinates);
-                }
 
                 return new GeometryModel3D(geometry, this.Material) { BackMaterial = this.BackMaterial };
             }
@@ -823,7 +861,7 @@ namespace H.Drawing3D.Shape.File.Importers
         private List<Point3D> ReadVertexList(BinaryReader reader)
         {
             int size = reader.ReadUInt16();
-            List<Point3D> pts = new(size);
+            List<Point3D> pts = new List<Point3D>(size);
             for (int i = 0; i < size; i++)
             {
                 float x = reader.ReadSingle();

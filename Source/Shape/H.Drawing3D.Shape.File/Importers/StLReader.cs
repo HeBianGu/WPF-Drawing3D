@@ -7,18 +7,18 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using H.Drawing3D.Shape.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
-
-namespace H.Drawing3D.Shape.File.Importers
+namespace HelixToolkit.Wpf
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Text.RegularExpressions;
+    using System.Windows.Media;
+    using System.Windows.Media.Media3D;
+    using System.Windows.Threading;
+    using H.Drawing3D.Shape.Geometry;
+
     /// <summary>
     /// Provides an importer for StereoLithography .StL files.
     /// </summary>
@@ -30,12 +30,12 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <summary>
         /// The regular expression used to parse normal vectors.
         /// </summary>
-        private static readonly Regex NormalRegex = new(@"normal\s*(\S*)\s*(\S*)\s*(\S*)", RegexOptions.Compiled);
+        private static readonly Regex NormalRegex = new Regex(@"normal\s*(\S*)\s*(\S*)\s*(\S*)", RegexOptions.Compiled);
 
         /// <summary>
         /// The regular expression used to parse vertices.
         /// </summary>
-        private static readonly Regex VertexRegex = new(@"vertex\s*(\S*)\s*(\S*)\s*(\S*)", RegexOptions.Compiled);
+        private static readonly Regex VertexRegex = new Regex(@"vertex\s*(\S*)\s*(\S*)\s*(\S*)", RegexOptions.Compiled);
 
         /// <summary>
         /// The index.
@@ -86,7 +86,7 @@ namespace H.Drawing3D.Shape.File.Importers
         public override Model3DGroup Read(Stream stream)
         {
             // Try to read in BINARY format
-            bool success = this.TryReadBinary(stream);
+            var success = this.TryReadBinary(stream);
             if (!success)
             {
                 // Reset position of stream
@@ -96,7 +96,12 @@ namespace H.Drawing3D.Shape.File.Importers
                 success = this.TryReadAscii(stream);
             }
 
-            return success ? this.ToModel3D() : null;
+            if (success)
+            {
+                return this.ToModel3D();
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -111,14 +116,14 @@ namespace H.Drawing3D.Shape.File.Importers
                 {
                     modelGroup = new Model3DGroup();
                     int i = 0;
-                    foreach (MeshBuilder mesh in this.Meshes)
+                    foreach (var mesh in this.Meshes)
                     {
-                        GeometryModel3D gm = new()
-                        {
-                            Geometry = mesh.ToMesh(),
-                            Material = this.Materials[i],
-                            BackMaterial = this.Materials[i]
-                        };
+                        var gm = new GeometryModel3D
+                                     {
+                                         Geometry = mesh.ToMesh(),
+                                         Material = this.Materials[i],
+                                         BackMaterial = this.Materials[i]
+                                     };
                         if (this.Freeze)
                         {
                             gm.Freeze();
@@ -159,8 +164,8 @@ namespace H.Drawing3D.Shape.File.Importers
             }
             else
             {
-                id = line[..idx].ToLowerInvariant();
-                values = line[(idx + 1)..];
+                id = line.Substring(0, idx).ToLowerInvariant();
+                values = line.Substring(idx + 1);
             }
         }
 
@@ -177,7 +182,7 @@ namespace H.Drawing3D.Shape.File.Importers
         {
             input = input.ToLowerInvariant();
             input = input.Replace("nan", "NaN");
-            Match match = NormalRegex.Match(input);
+            var match = NormalRegex.Match(input);
             if (!match.Success)
             {
                 throw new FileFormatException("Unexpected line.");
@@ -201,7 +206,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private static float ReadFloat(BinaryReader reader)
         {
-            byte[] bytes = reader.ReadBytes(4);
+            var bytes = reader.ReadBytes(4);
             return BitConverter.ToSingle(bytes, 0);
         }
 
@@ -224,8 +229,9 @@ namespace H.Drawing3D.Shape.File.Importers
                 throw new ArgumentNullException(nameof(token));
             }
 
-            string line = reader.ReadLine();
-            ParseLine(line, out string id, out _);
+            var line = reader.ReadLine();
+            string id, values;
+            ParseLine(line, out id, out values);
 
             if (!string.Equals(token, id, StringComparison.OrdinalIgnoreCase))
             {
@@ -244,7 +250,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private static ushort ReadUInt16(BinaryReader reader)
         {
-            byte[] bytes = reader.ReadBytes(2);
+            var bytes = reader.ReadBytes(2);
             return BitConverter.ToUInt16(bytes, 0);
         }
 
@@ -259,7 +265,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private static uint ReadUInt32(BinaryReader reader)
         {
-            byte[] bytes = reader.ReadBytes(4);
+            var bytes = reader.ReadBytes(4);
             return BitConverter.ToUInt32(bytes, 0);
         }
 
@@ -278,7 +284,7 @@ namespace H.Drawing3D.Shape.File.Importers
         private static bool TryParseVertex(string line, out Point3D point)
         {
             line = line.ToLowerInvariant();
-            Match match = VertexRegex.Match(line);
+            var match = VertexRegex.Match(line);
             if (!match.Success)
             {
                 point = new Point3D();
@@ -304,12 +310,14 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </param>
         private void ReadFacet(StreamReader reader, string normal)
         {
-            _ = ParseNormal(normal);
-            List<Point3D> points = new();
+#pragma warning disable 168
+            var n = ParseNormal(normal);
+#pragma warning restore 168
+            var points = new List<Point3D>();
             ReadLine(reader, "outer");
             while (true)
             {
-                string line = reader.ReadLine();
+                var line = reader.ReadLine();
                 if (string.IsNullOrEmpty(line))
                 {
                     continue;
@@ -317,13 +325,15 @@ namespace H.Drawing3D.Shape.File.Importers
 
                 line = line.Trim();
 
-                if (TryParseVertex(line, out Point3D point))
+                Point3D point;
+                if (TryParseVertex(line, out point))
                 {
                     points.Add(point);
                     continue;
                 }
 
-                ParseLine(line, out string id, out string _);
+                string id, values;
+                ParseLine(line, out id, out values);
 
                 if (id == "endloop")
                 {
@@ -359,24 +369,28 @@ namespace H.Drawing3D.Shape.File.Importers
             float ni = ReadFloat(reader);
             float nj = ReadFloat(reader);
             float nk = ReadFloat(reader);
-            _ = new Vector3D(ni, nj, nk);
+
+#pragma warning disable 168
+            var n = new Vector3D(ni, nj, nk);
+#pragma warning restore 168
+
             float x1 = ReadFloat(reader);
             float y1 = ReadFloat(reader);
             float z1 = ReadFloat(reader);
-            Point3D v1 = new(x1, y1, z1);
+            var v1 = new Point3D(x1, y1, z1);
 
             float x2 = ReadFloat(reader);
             float y2 = ReadFloat(reader);
             float z2 = ReadFloat(reader);
-            Point3D v2 = new(x2, y2, z2);
+            var v2 = new Point3D(x2, y2, z2);
 
             float x3 = ReadFloat(reader);
             float y3 = ReadFloat(reader);
             float z3 = ReadFloat(reader);
-            Point3D v3 = new(x3, y3, z3);
+            var v3 = new Point3D(x3, y3, z3);
 
-            char[] attrib = Convert.ToString(ReadUInt16(reader), 2).PadLeft(16, '0').ToCharArray();
-            bool hasColor = attrib[0].Equals('1');
+            var attrib = Convert.ToString(ReadUInt16(reader), 2).PadLeft(16, '0').ToCharArray();
+            var hasColor = attrib[0].Equals('1');
 
             if (hasColor)
             {
@@ -401,7 +415,7 @@ namespace H.Drawing3D.Shape.File.Importers
                 red = attrib[1].Equals('1') ? red + 16 : red;
                 int r = red * 8;
 
-                Color currentColor = Color.FromRgb(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b));
+                var currentColor = Color.FromRgb(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b));
 
                 if (!Color.Equals(this.lastColor, currentColor))
                 {
@@ -443,13 +457,13 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private bool TryReadAscii(Stream stream)
         {
-            StreamReader reader = new(stream);
+            var reader = new StreamReader(stream);
             this.Meshes.Add(new MeshBuilder(true, true));
             this.Materials.Add(this.DefaultMaterial);
 
             while (!reader.EndOfStream)
             {
-                string line = reader.ReadLine();
+                var line = reader.ReadLine();
                 if (line == null)
                 {
                     continue;
@@ -462,7 +476,8 @@ namespace H.Drawing3D.Shape.File.Importers
                     continue;
                 }
 
-                ParseLine(line, out string id, out string values);
+                string id, values;
+                ParseLine(line, out id, out values);
                 switch (id)
                 {
                     case "solid":
@@ -488,7 +503,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <returns>
         /// True if the file was read successfully.
         /// </returns>
-        /// <exception cref="FileFormatException">
+        /// <exception cref="System.IO.FileFormatException">
         /// Incomplete file
         /// </exception>
         private bool TryReadBinary(Stream stream)
@@ -499,8 +514,8 @@ namespace H.Drawing3D.Shape.File.Importers
                 throw new FileFormatException("Incomplete file");
             }
 
-            BinaryReader reader = new(stream);
-            this.Header = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(80)).Trim();
+            var reader = new BinaryReader(stream);
+            this.Header = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(80)).Trim(); 
             uint numberTriangles = ReadUInt32(reader);
 
             if (length - 84 != numberTriangles * 50)

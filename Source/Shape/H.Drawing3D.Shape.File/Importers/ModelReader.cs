@@ -7,14 +7,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
-
-namespace H.Drawing3D.Shape.File.Importers
+namespace HelixToolkit.Wpf
 {
+    using H.Drawing3D.Shape.File.Importers;
+    using System;
+    using System.IO;
+    using System.Windows.Media;
+    using System.Windows.Media.Media3D;
+    using System.Windows.Threading;
+
     /// <summary>
     /// Class ModelReader.
     /// </summary>
@@ -62,9 +63,15 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <value>The texture path.</value>
         public string TexturePath
         {
-            get => this.Directory;
+            get
+            {
+                return this.Directory;
+            }
 
-            set => this.Directory = value;
+            set
+            {
+                this.Directory = value;
+            }
         }
 
         /// <summary>
@@ -75,8 +82,10 @@ namespace H.Drawing3D.Shape.File.Importers
         public virtual Model3DGroup Read(string path)
         {
             this.Directory = Path.GetDirectoryName(path);
-            using FileStream s = System.IO.File.OpenRead(path);
-            return this.Read(s);
+            using (var s = File.OpenRead(path))
+            {
+                return this.Read(s);
+            }
         }
 
         /// <summary>

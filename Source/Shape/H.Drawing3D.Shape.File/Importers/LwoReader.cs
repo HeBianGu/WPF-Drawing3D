@@ -7,16 +7,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using H.Drawing3D.Shape.Geometry;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
-
-namespace H.Drawing3D.Shape.File.Importers
+namespace HelixToolkit.Wpf
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
+    using System.Windows.Media.Media3D;
+    using System.Windows.Threading;
+    using H.Drawing3D.Shape.Geometry;
+
     /// <summary>
     /// LWO (Lightwave object) file reader
     /// </summary>
@@ -69,62 +69,64 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <returns>A Model3D.</returns>
         public override Model3DGroup Read(Stream s)
         {
-            using BinaryReader reader = new(s);
-            long length = reader.BaseStream.Length;
-
-            string headerId = this.ReadChunkId(reader);
-            if (headerId != "FORM")
+            using (var reader = new BinaryReader(s))
             {
-                throw new FileFormatException("Unknown file");
-            }
+                long length = reader.BaseStream.Length;
 
-            int headerSize = this.ReadChunkSize(reader);
-
-            if (headerSize + 8 != length)
-            {
-                throw new FileFormatException("Incomplete file (file length does not match header)");
-            }
-
-            string header2 = this.ReadChunkId(reader);
-            switch (header2)
-            {
-                case "LWOB":
-                    break;
-                case "LWO2":
-                    throw new FileFormatException("LWO2 is not yet supported.");
-                default:
-                    throw new FileFormatException("Unknown file format (" + header2 + ").");
-            }
-
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
-                string id = this.ReadChunkId(reader);
-                int size = this.ReadChunkSize(reader);
-
-                switch (id)
+                string headerId = this.ReadChunkId(reader);
+                if (headerId != "FORM")
                 {
-                    case "PNTS":
-                        this.ReadPoints(reader, size);
-                        break;
-                    case "SRFS":
-                        this.ReadSurface(reader, size);
-                        break;
-                    case "POLS":
-                        this.ReadPolygons(reader, size);
-                        break;
-                    // ReSharper disable RedundantCaseLabel
-                    case "SURF":
-                    // ReSharper restore RedundantCaseLabel
-                    default:
-                        // download the whole chunk
-                        // ReSharper disable UnusedVariable
-                        byte[] data = this.ReadData(reader, size);
-                        // ReSharper restore UnusedVariable
-                        break;
+                    throw new FileFormatException("Unknown file");
                 }
-            }
 
-            return this.BuildModel();
+                int headerSize = this.ReadChunkSize(reader);
+
+                if (headerSize + 8 != length)
+                {
+                    throw new FileFormatException("Incomplete file (file length does not match header)");
+                }
+
+                string header2 = this.ReadChunkId(reader);
+                switch (header2)
+                {
+                    case "LWOB":
+                        break;
+                    case "LWO2":
+                        throw new FileFormatException("LWO2 is not yet supported.");
+                    default:
+                        throw new FileFormatException("Unknown file format (" + header2 + ").");
+                }
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    string id = this.ReadChunkId(reader);
+                    int size = this.ReadChunkSize(reader);
+
+                    switch (id)
+                    {
+                        case "PNTS":
+                            this.ReadPoints(reader, size);
+                            break;
+                        case "SRFS":
+                            this.ReadSurface(reader, size);
+                            break;
+                        case "POLS":
+                            this.ReadPolygons(reader, size);
+                            break;
+                        // ReSharper disable RedundantCaseLabel
+                        case "SURF":
+                        // ReSharper restore RedundantCaseLabel
+                        default:
+                            // download the whole chunk
+                            // ReSharper disable UnusedVariable
+                            var data = this.ReadData(reader, size);
+                            // ReSharper restore UnusedVariable
+                            break;
+                    }
+                }
+
+                return this.BuildModel();
+            }
         }
 
         /// <summary>
@@ -139,14 +141,14 @@ namespace H.Drawing3D.Shape.File.Importers
                 {
                     modelGroup = new Model3DGroup();
                     int index = 0;
-                    foreach (MeshBuilder mesh in this.Meshes)
+                    foreach (var mesh in this.Meshes)
                     {
-                        GeometryModel3D gm = new()
-                        {
-                            Geometry = mesh.ToMesh(),
-                            Material = this.Materials[index],
-                            BackMaterial = this.Materials[index]
-                        };
+                        var gm = new GeometryModel3D
+                                     {
+                                         Geometry = mesh.ToMesh(),
+                                         Material = this.Materials[index],
+                                         BackMaterial = this.Materials[index]
+                                     };
                         if (this.Freeze)
                         {
                             gm.Freeze();
@@ -173,7 +175,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private string ReadChunkId(BinaryReader reader)
         {
-            char[] chars = reader.ReadChars(4);
+            var chars = reader.ReadChars(4);
             return new string(chars);
         }
 
@@ -211,7 +213,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private float ReadFloat(BinaryReader reader)
         {
-            byte[] bytes = reader.ReadBytes(4);
+            var bytes = reader.ReadBytes(4);
             return BitConverter.ToSingle(new[] { bytes[3], bytes[2], bytes[1], bytes[0] }, 0);
         }
 
@@ -224,7 +226,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private int ReadInt(BinaryReader reader)
         {
-            byte[] bytes = reader.ReadBytes(4);
+            var bytes = reader.ReadBytes(4);
             return BitConverter.ToInt32(new[] { bytes[3], bytes[2], bytes[1], bytes[0] }, 0);
         }
 
@@ -261,7 +263,7 @@ namespace H.Drawing3D.Shape.File.Importers
                     throw new NotSupportedException("details are not supported");
                 }
 
-                List<Point3D> pts = new(nverts);
+                var pts = new List<Point3D>(nverts);
                 for (int i = 0; i < nverts; i++)
                 {
                     int vidx = this.ReadShortInt(reader);
@@ -284,7 +286,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private short ReadShortInt(BinaryReader reader)
         {
-            byte[] bytes = reader.ReadBytes(2);
+            var bytes = reader.ReadBytes(2);
             return BitConverter.ToInt16(new[] { bytes[1], bytes[0] }, 0);
         }
 
@@ -298,9 +300,9 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private string ReadString(BinaryReader reader, int size)
         {
-            byte[] bytes = reader.ReadBytes(size);
-            ASCIIEncoding enc = new();
-            string s = enc.GetString(bytes);
+            var bytes = reader.ReadBytes(size);
+            var enc = new ASCIIEncoding();
+            var s = enc.GetString(bytes);
             return s.Trim('\0');
         }
 
@@ -316,7 +318,7 @@ namespace H.Drawing3D.Shape.File.Importers
             this.Materials = new List<Material>();
 
             string name = this.ReadString(reader, size);
-            string[] names = name.Split('\0');
+            var names = name.Split('\0');
             for (int i = 0; i < names.Length; i++)
             {
                 string n = names[i];

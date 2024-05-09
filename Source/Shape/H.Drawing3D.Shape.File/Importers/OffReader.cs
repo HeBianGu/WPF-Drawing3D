@@ -7,16 +7,17 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using H.Drawing3D.Shape.Geometry;
-using H.Drawing3D.Shape.Geometry.Geometry;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
-
-namespace H.Drawing3D.Shape.File.Importers
+namespace HelixToolkit.Wpf
 {
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Windows.Media.Media3D;
+    using System.Windows.Threading;
+    using H.Drawing3D.Shape.Geometry;
+    using H.Drawing3D.Shape.Geometry.Geometry;
+
+
     /// <summary>
     /// Provides an Object File Format (OFF) reader.
     /// </summary>
@@ -67,13 +68,13 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         public Mesh3D CreateMesh()
         {
-            Mesh3D mesh = new();
-            foreach (Point3D v in this.Vertices)
+            var mesh = new Mesh3D();
+            foreach (var v in this.Vertices)
             {
                 mesh.Vertices.Add(v);
             }
 
-            foreach (int[] face in this.Faces)
+            foreach (var face in this.Faces)
             {
                 mesh.Faces.Add((int[])face.Clone());
             }
@@ -89,13 +90,13 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         public MeshGeometry3D CreateMeshGeometry3D()
         {
-            MeshBuilder mb = new(false, false);
-            foreach (Point3D p in this.Vertices)
+            var mb = new MeshBuilder(false, false);
+            foreach (var p in this.Vertices)
             {
                 mb.Positions.Add(p);
             }
 
-            foreach (int[] face in this.Faces)
+            foreach (var face in this.Faces)
             {
                 mb.AddTriangleFan(face);
             }
@@ -114,8 +115,8 @@ namespace H.Drawing3D.Shape.File.Importers
                 () =>
                 {
                     modelGroup = new Model3DGroup();
-                    MeshGeometry3D g = this.CreateMeshGeometry3D();
-                    GeometryModel3D gm = new() { Geometry = g, Material = this.DefaultMaterial };
+                    var g = this.CreateMeshGeometry3D();
+                    var gm = new GeometryModel3D { Geometry = g, Material = this.DefaultMaterial };
                     gm.BackMaterial = gm.Material;
                     if (this.Freeze)
                     {
@@ -140,129 +141,135 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </param>
         public void Load(Stream s)
         {
-            using StreamReader reader = new(s);
-            bool containsNormals = false;
-            bool containsTextureCoordinates = false;
-            bool containsColors = false;
-            bool containsHomogeneousCoordinates = false;
-            int vertexDimension = 3;
-            bool nextLineContainsVertexDimension = false;
-            bool nextLineContainsNumberOfVertices = false;
-            int numberOfVertices = 0;
-            int numberOfFaces = 0;
-
-            while (!reader.EndOfStream)
+            using (var reader = new StreamReader(s))
             {
-                string line = reader.ReadLine();
-                if (line == null)
-                {
-                    break;
-                }
+                bool containsNormals = false;
+                bool containsTextureCoordinates = false;
+                bool containsColors = false;
+                bool containsHomogeneousCoordinates = false;
+                int vertexDimension = 3;
+                bool nextLineContainsVertexDimension = false;
+                bool nextLineContainsNumberOfVertices = false;
+                int numberOfVertices = 0;
+                int numberOfFaces = 0;
 
-                line = line.Trim();
-                if (line.StartsWith("#") || line.Length == 0)
+                while (!reader.EndOfStream)
                 {
-                    continue;
-                }
-
-                if (nextLineContainsVertexDimension)
-                {
-                    int[] values = GetIntValues(line);
-                    vertexDimension = values[0];
-                    nextLineContainsVertexDimension = false;
-                    continue;
-                }
-
-                if (line.Contains("OFF"))
-                {
-                    containsNormals = line.Contains("N");
-                    containsColors = line.Contains("C");
-                    containsTextureCoordinates = line.Contains("ST");
-                    if (line.Contains("4"))
+                    var line = reader.ReadLine();
+                    if (line == null)
                     {
-                        containsHomogeneousCoordinates = true;
+                        break;
                     }
 
-                    if (line.Contains("n"))
+                    line = line.Trim();
+                    if (line.StartsWith("#") || line.Length == 0)
                     {
-                        nextLineContainsVertexDimension = true;
+                        continue;
                     }
 
-                    nextLineContainsNumberOfVertices = true;
-                    continue;
-                }
-
-                if (nextLineContainsNumberOfVertices)
-                {
-                    int[] values = GetIntValues(line);
-                    numberOfVertices = values[0];
-                    numberOfFaces = values[1];
-
-                    /* numberOfEdges = values[2]; */
-                    nextLineContainsNumberOfVertices = false;
-                    continue;
-                }
-
-                if (this.Vertices.Count < numberOfVertices)
-                {
-                    double[] x = new double[vertexDimension];
-                    double[] values = GetValues(line);
-                    int i = 0;
-                    for (int j = 0; j < vertexDimension; j++)
+                    if (nextLineContainsVertexDimension)
                     {
-                        x[j] = values[i++];
+                        var values = GetIntValues(line);
+                        vertexDimension = values[0];
+                        nextLineContainsVertexDimension = false;
+                        continue;
                     }
 
-                    double[] n = new double[vertexDimension];
-                    double[] uv = new double[2];
-                    if (containsHomogeneousCoordinates)
+                    if (line.Contains("OFF"))
                     {
-                        // ReSharper disable once RedundantAssignment
-                        _ = values[i++];
+                        containsNormals = line.Contains("N");
+                        containsColors = line.Contains("C");
+                        containsTextureCoordinates = line.Contains("ST");
+                        if (line.Contains("4"))
+                        {
+                            containsHomogeneousCoordinates = true;
+                        }
+
+                        if (line.Contains("n"))
+                        {
+                            nextLineContainsVertexDimension = true;
+                        }
+
+                        nextLineContainsNumberOfVertices = true;
+                        continue;
                     }
 
-                    if (containsNormals)
+                    if (nextLineContainsNumberOfVertices)
                     {
+                        var values = GetIntValues(line);
+                        numberOfVertices = values[0];
+                        numberOfFaces = values[1];
+
+                        /* numberOfEdges = values[2]; */
+                        nextLineContainsNumberOfVertices = false;
+                        continue;
+                    }
+
+                    if (this.Vertices.Count < numberOfVertices)
+                    {
+                        var x = new double[vertexDimension];
+                        var values = GetValues(line);
+                        int i = 0;
                         for (int j = 0; j < vertexDimension; j++)
                         {
-                            n[j] = values[i++];
+                            x[j] = values[i++];
                         }
-                    }
 
-                    if (containsColors)
-                    {
-                        // read color
-                    }
+                        var n = new double[vertexDimension];
+                        var uv = new double[2];
 
-                    if (containsTextureCoordinates)
-                    {
-                        for (int j = 0; j < 2; j++)
+#pragma warning disable 219
+                        double w = 0;
+                        if (containsHomogeneousCoordinates)
                         {
-                            uv[j] = values[i++];
+                            // ReSharper disable once RedundantAssignment
+                            w = values[i++];
                         }
+#pragma warning restore 219
+
+                        if (containsNormals)
+                        {
+                            for (int j = 0; j < vertexDimension; j++)
+                            {
+                                n[j] = values[i++];
+                            }
+                        }
+
+                        if (containsColors)
+                        {
+                            // read color
+                        }
+
+                        if (containsTextureCoordinates)
+                        {
+                            for (int j = 0; j < 2; j++)
+                            {
+                                uv[j] = values[i++];
+                            }
+                        }
+
+                        this.Vertices.Add(new Point3D(x[0], x[1], x[2]));
+
+                        continue;
                     }
 
-                    this.Vertices.Add(new Point3D(x[0], x[1], x[2]));
-
-                    continue;
-                }
-
-                if (this.Faces.Count < numberOfFaces)
-                {
-                    int[] values = GetIntValues(line);
-                    int nv = values[0];
-                    int[] vertices = new int[nv];
-                    for (int i = 0; i < nv; i++)
+                    if (this.Faces.Count < numberOfFaces)
                     {
-                        vertices[i] = values[i + 1];
-                    }
+                        var values = GetIntValues(line);
+                        int nv = values[0];
+                        var vertices = new int[nv];
+                        for (int i = 0; i < nv; i++)
+                        {
+                            vertices[i] = values[i + 1];
+                        }
 
-                    if (containsColors)
-                    {
-                        // read colorspec
-                    }
+                        if (containsColors)
+                        {
+                            // read colorspec
+                        }
 
-                    this.Faces.Add(vertices);
+                        this.Faces.Add(vertices);
+                    }
                 }
             }
         }
@@ -289,8 +296,8 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private static int[] GetIntValues(string input)
         {
-            string[] fields = RemoveComments(input).Split(Delimiters, System.StringSplitOptions.RemoveEmptyEntries);
-            int[] result = new int[fields.Length];
+            var fields = RemoveComments(input).Split(Delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+            var result = new int[fields.Length];
             for (int i = 0; i < fields.Length; i++)
             {
                 result[i] = (int)double.Parse(fields[i], CultureInfo.InvariantCulture);
@@ -310,8 +317,8 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private static double[] GetValues(string input)
         {
-            string[] fields = RemoveComments(input).Split(Delimiters, System.StringSplitOptions.RemoveEmptyEntries);
-            double[] result = new double[fields.Length];
+            var fields = RemoveComments(input).Split(Delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+            var result = new double[fields.Length];
             for (int i = 0; i < fields.Length; i++)
             {
                 result[i] = double.Parse(fields[i], CultureInfo.InvariantCulture);
@@ -332,7 +339,12 @@ namespace H.Drawing3D.Shape.File.Importers
         private static string RemoveComments(string input)
         {
             int commentIndex = input.IndexOf('#');
-            return commentIndex >= 0 ? input[..commentIndex] : input;
+            if (commentIndex >= 0)
+            {
+                return input.Substring(0, commentIndex);
+            }
+
+            return input;
         }
     }
 }

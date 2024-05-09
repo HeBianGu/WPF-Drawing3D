@@ -63,7 +63,7 @@ namespace H.Drawing3D.Shape.Geometry
             // Point-List from Input
             // (we don't want the first and last Point to be present two times)
             List<Point> points = polygon.ToList();
-            if (points[0] == points[^1])
+            if (points[0] == points[points.Count - 1])
             {
                 points.RemoveAt(points.Count - 1);
             }
@@ -956,11 +956,8 @@ namespace H.Drawing3D.Shape.Geometry
             // The Hole Points
             List<PolygonPoint> polyPoints = points.Select(p => new PolygonPoint(p)).ToList();
             // If Endpoint equals Startpoint
-            if (polyPoints[0].Equals(polyPoints[^1]))
-            {
+            if (polyPoints[0].Equals(polyPoints[polyPoints.Count - 1]))
                 polyPoints.RemoveAt(polyPoints.Count - 1);
-            }
-
             this.Holes.Add(polyPoints);
 
             int cntBefore = this.Points.Count;

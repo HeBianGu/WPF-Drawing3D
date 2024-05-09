@@ -108,7 +108,9 @@ namespace H.Drawing3D.Shape.Helper
             {
                 int source = _random.Next(p.Length);
 
-                (p[source], p[i]) = (p[i], p[source]);
+                int t = p[i];
+                p[i] = p[source];
+                p[source] = t;
             }
         }
 

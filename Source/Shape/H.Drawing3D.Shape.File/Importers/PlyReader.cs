@@ -1,13 +1,16 @@
-using H.Drawing3D.Shape.Geometry.Geometry;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
+using H.Drawing3D.Shape.Geometry;
+using H.Drawing3D.Shape.Geometry.Geometry;
 
-namespace H.Drawing3D.Shape.File.Importers
+namespace HelixToolkit.Wpf
 {
     /// <summary>
     /// Polygon File Format Reader.
@@ -24,8 +27,8 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <param name="dispatcher"></param>
         public PlyReader(Dispatcher dispatcher = null) : base(dispatcher)
         {
-            this.Header = new PlyHeader();
-            this.Body = new List<PlyElement>();
+            Header = new PlyHeader();
+            Body = new List<PlyElement>();
         }
 
         #region Public methods
@@ -48,9 +51,11 @@ namespace H.Drawing3D.Shape.File.Importers
         public override Model3DGroup Read(string path)
         {
             this.Directory = Path.GetDirectoryName(path);
-            this.Load(path);
-            using FileStream s = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return this.Read(s);
+            Load(path);
+            using (var s = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return this.Read(s);
+            }
         }
 
         /// <summary>
@@ -61,24 +66,24 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         public Mesh3D CreateMesh()
         {
-            Mesh3D mesh = new();
+            var mesh = new Mesh3D();
 
-            PlyElement vertexElement = this.Body.Find(item => item.Name == "vertex");
+            var vertexElement = Body.Find(item => item.Name == "vertex");
             if (vertexElement != null && vertexElement.Count > 0)
             {
-                foreach (PlyProperty[] vertProp in vertexElement.Instances)
+                foreach (var vertProp in vertexElement.Instances)
                 {
-                    List<PlyProperty> vertPropList = vertProp.ToList();
-                    PlyProperty xProp = vertPropList.Find(item => !item.IsList && item.Name == "x");
-                    PlyProperty yProp = vertPropList.Find(item => !item.IsList && item.Name == "y");
-                    PlyProperty zProp = vertPropList.Find(item => !item.IsList && item.Name == "z");
+                    var vertPropList = vertProp.ToList();
+                    var xProp = vertPropList.Find(item => !item.IsList && item.Name == "x");
+                    var yProp = vertPropList.Find(item => !item.IsList && item.Name == "y");
+                    var zProp = vertPropList.Find(item => !item.IsList && item.Name == "z");
 
                     if (xProp != null && yProp != null && zProp != null)
                     {
-                        double xCoord = double.Parse(xProp.Value?.ToString() ?? "0");
-                        double yCoord = double.Parse(yProp.Value?.ToString() ?? "0");
-                        double zCoord = double.Parse(zProp.Value?.ToString() ?? "0");
-                        Point3D vertex = new(xCoord, yCoord, zCoord);
+                        var xCoord = double.Parse(xProp.Value?.ToString() ?? "0");
+                        var yCoord = double.Parse(yProp.Value?.ToString() ?? "0");
+                        var zCoord = double.Parse(zProp.Value?.ToString() ?? "0");
+                        var vertex = new Point3D(xCoord, yCoord, zCoord);
                         mesh.Vertices.Add(vertex);
                     }
 
@@ -95,16 +100,16 @@ namespace H.Drawing3D.Shape.File.Importers
                 }
             }
 
-            PlyElement faceElement = this.Body.Find(item => item.Name == "face");
+            var faceElement = Body.Find(item => item.Name == "face");
             if (faceElement != null && faceElement.Count > 0)
             {
-                foreach (PlyProperty[] faceProp in faceElement.Instances)
+                foreach (var faceProp in faceElement.Instances)
                 {
-                    PlyProperty[] vertexIndicesProperties = (from item in faceProp where (item.IsList && item.Name == "vertex_indices") || item.Name == "vertex_index" select item).ToArray();
+                    var vertexIndicesProperties = (from item in faceProp where item.IsList && item.Name == "vertex_indices" || item.Name == "vertex_index" select item).ToArray();
                     if (vertexIndicesProperties.Length > 0)
                     {
-                        List<int> vertexIndices = new();
-                        foreach (object item in vertexIndicesProperties[0].ListContentValues)
+                        var vertexIndices = new List<int>();
+                        foreach (var item in vertexIndicesProperties[0].ListContentValues)
                         {
                             vertexIndices.Add(Convert.ToInt32(item ?? "0"));
                         }
@@ -125,7 +130,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         public MeshGeometry3D CreateMeshGeometry3D()
         {
-            Mesh3D mesh = this.CreateMesh();
+            var mesh = CreateMesh();
             return mesh.ToMeshGeometry3D();
         }
 
@@ -139,12 +144,12 @@ namespace H.Drawing3D.Shape.File.Importers
             this.Dispatch(() =>
             {
                 modelGroup = new Model3DGroup();
-                MeshGeometry3D g = this.CreateMeshGeometry3D();
-                GeometryModel3D gm = new()
+                var g = this.CreateMeshGeometry3D();
+                var gm = new GeometryModel3D
                 {
                     Geometry = g,
                     Material = this.DefaultMaterial,
-                    BackMaterial = this.DefaultMaterial
+                    BackMaterial = DefaultMaterial
                 };
                 if (this.Freeze)
                 {
@@ -166,12 +171,12 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <param name="s">The stream containing the ply file.</param>
         public void Load(Stream s)
         {
-            this.Header = new PlyHeader();
-            this.Body = new List<PlyElement>();
-            Tuple<PlyHeader, List<PlyElement>> plyFileData = this.LoadPlyFile(s);
+            Header = new PlyHeader();
+            Body = new List<PlyElement>();
+            var plyFileData = LoadPlyFile(s);
 
-            this.Header = plyFileData.Item1;
-            this.Body = plyFileData.Item2;
+            Header = plyFileData.Item1;
+            Body = plyFileData.Item2;
             //var location = "";
             //DumpFileAsASCII(location, plyHeader, plyBody);
         }
@@ -183,8 +188,10 @@ namespace H.Drawing3D.Shape.File.Importers
         public void Load(string path)
         {
             this.Directory = Path.GetDirectoryName(path);
-            using FileStream fs = new(path, FileMode.Open, FileAccess.Read);
-            this.Load(fs);
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                Load(fs);
+            }
         }
 
         /// <summary>
@@ -198,26 +205,24 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </remarks>
         public Tuple<PlyHeader, List<PlyElement>> LoadPlyFile(Stream plyFileStream)
         {
-            List<string> headerLines = new();
-            long startPosition = 0;
-            StreamReader textReader = new(plyFileStream);
+            var headerLines = new List<string>();
+            Int64 startPosition = 0;
+            var textReader = new StreamReader(plyFileStream);
             plyFileStream.Position = 0;
-            _ = plyFileStream.Seek(0, SeekOrigin.Begin);
+            plyFileStream.Seek(0, SeekOrigin.Begin);
 
-            bool readingHeader = true;
-            List<StringBuilder> headerLineBuilders = new() { new StringBuilder() };
-            bool newLineCharMet = false;
+            var readingHeader = true;
+            var headerLineBuilders = new List<StringBuilder>() { new StringBuilder() };
+            var newLineCharMet = false;
 
             while (readingHeader && textReader.EndOfStream == false)
             {
-                char currentChar = (char)textReader.Read();
+                var currentChar = (char)textReader.Read();
 
-                if (currentChar is '\r' or '\n')
+                if (currentChar == '\r' || currentChar == '\n')
                 {
                     if (newLineCharMet)
-                    {
                         startPosition++;
-                    }
                     else
                     {
                         newLineCharMet = true;
@@ -227,7 +232,7 @@ namespace H.Drawing3D.Shape.File.Importers
                 }
                 else
                 {
-                    if (headerLineBuilders.Count > 2 && headerLineBuilders[^2].ToString() == "end_header")
+                    if (headerLineBuilders.Count > 2 && headerLineBuilders[headerLineBuilders.Count - 2].ToString() == "end_header")
                     {
                         headerLineBuilders.RemoveAt(headerLineBuilders.Count - 1);
                         readingHeader = false;
@@ -235,31 +240,31 @@ namespace H.Drawing3D.Shape.File.Importers
                     else
                     {
                         newLineCharMet = false;
-                        _ = headerLineBuilders.Last().Append(currentChar.ToString());
+                        headerLineBuilders.Last().Append(currentChar.ToString());
                         startPosition++;
                     }
                 }
             }
 
-            foreach (StringBuilder headerLineBuilder in headerLineBuilders)
+            foreach (var headerLineBuilder in headerLineBuilders)
             {
                 headerLines.Add(headerLineBuilder.ToString());
             }
 
-            PlyHeader plyHeader = this.ReadHeader(headerLines.ToArray());
-            List<PlyElement> plyBody = new();
+            var plyHeader = ReadHeader(headerLines.ToArray());
+            var plyBody = new List<PlyElement>();
             plyFileStream.Position = startPosition;
 
             switch (plyHeader.FormatType)
             {
                 case PlyFormatTypes.ascii:
-                    plyBody = this.ReadASCII(plyFileStream, plyHeader);
+                    plyBody = ReadASCII(plyFileStream, plyHeader);
                     break;
                 case PlyFormatTypes.binary_big_endian:
-                    plyBody = this.ReadBinary(plyFileStream, plyHeader, true);
+                    plyBody = ReadBinary(plyFileStream, plyHeader, true);
                     break;
                 case PlyFormatTypes.binary_little_endian:
-                    plyBody = this.ReadBinary(plyFileStream, plyHeader, false);
+                    plyBody = ReadBinary(plyFileStream, plyHeader, false);
                     break;
                 default:
                     break;
@@ -288,7 +293,7 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <summary>
         /// The supported version of the ply format.
         /// </summary>
-        public static readonly Version SUPPORTEDVERSION = new(1, 0, 0);
+        public static readonly Version SUPPORTEDVERSION = new Version(1, 0, 0);
 
         /// <summary>
         /// Specifies the types of ply model formats.
@@ -408,9 +413,9 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <param name="instances">The instances of this elements properties.</param>
             public PlyElement(string name, int count, List<PlyProperty[]> instances)
             {
-                this.Name = name;
-                this.Count = count;
-                this.Instances = instances;
+                Name = name;
+                Count = count;
+                Instances = instances;
             }
 
             /// <summary>
@@ -450,12 +455,12 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <param name="listContentValues">The items in the property's list.</param>
             public PlyProperty(string name, PlyDataTypes type, object value, bool isList, PlyDataTypes listContentType, object[] listContentValues)
             {
-                this.Name = name;
-                this.Type = type;
-                this.Value = value;
-                this.IsList = isList;
-                this.ListContentType = listContentType;
-                this.ListContentValues = listContentValues;
+                Name = name;
+                Type = type;
+                Value = value;
+                IsList = isList;
+                ListContentType = listContentType;
+                ListContentValues = listContentValues;
             }
 
             /// <summary>
@@ -504,11 +509,11 @@ namespace H.Drawing3D.Shape.File.Importers
             /// </summary>
             public PlyHeader()
             {
-                this.FormatType = PlyFormatTypes.ascii;
-                this.Version = SUPPORTEDVERSION;
-                this.Comments = new string[] { };
-                this.ObjectInfos = new Tuple<string, string>[] { };
-                this.Elements = new PlyElement[] { };
+                FormatType = PlyFormatTypes.ascii;
+                Version = SUPPORTEDVERSION;
+                Comments = new string[] { };
+                ObjectInfos = new Tuple<string, string>[] { };
+                Elements = new PlyElement[] { };
             }
 
             /// <summary>
@@ -521,11 +526,11 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <param name="comments"></param>
             public PlyHeader(PlyFormatTypes plyFormatType, Version version, PlyElement[] elements, Tuple<string, string>[] objInfos, string[] comments)
             {
-                this.FormatType = plyFormatType;
-                this.Version = version;
-                this.ObjectInfos = objInfos;
-                this.Comments = comments;
-                this.Elements = elements;
+                FormatType = plyFormatType;
+                Version = version;
+                ObjectInfos = objInfos;
+                Comments = comments;
+                Elements = elements;
             }
 
             /// <summary>
@@ -566,23 +571,23 @@ namespace H.Drawing3D.Shape.File.Importers
         private PlyHeader ReadHeader(string[] headerLines)
         {
             if (headerLines.Length > 2 && (PlyHeaderItems)Enum.Parse(typeof(PlyHeaderItems), headerLines[0]) == PlyHeaderItems.ply
-                && (PlyHeaderItems)Enum.Parse(typeof(PlyHeaderItems), headerLines[^1]) == PlyHeaderItems.end_header)
+                && (PlyHeaderItems)Enum.Parse(typeof(PlyHeaderItems), headerLines[headerLines.Length - 1]) == PlyHeaderItems.end_header)
             {
-                string[] formatSpecLineParts = headerLines[1].Split(' ');
-                string formatStr = formatSpecLineParts[0];
-                string formatTypeStr = formatSpecLineParts[1];
-                Version fileVersion = Version.Parse(formatSpecLineParts[2]);
+                var formatSpecLineParts = headerLines[1].Split(' ');
+                var formatStr = formatSpecLineParts[0];
+                var formatTypeStr = formatSpecLineParts[1];
+                var fileVersion = Version.Parse(formatSpecLineParts[2]);
 
                 if ((PlyHeaderItems)Enum.Parse(typeof(PlyHeaderItems), formatStr) == PlyHeaderItems.format
                     && Enum.TryParse(formatTypeStr, out PlyFormatTypes formatType) && fileVersion <= SUPPORTEDVERSION)
                 {
-                    List<string> comments = new();
-                    List<Tuple<string, string>> objInfos = new();
-                    List<PlyElement> elements = new();
+                    var comments = new List<string>();
+                    var objInfos = new List<Tuple<string, string>>();
+                    var elements = new List<PlyElement>();
 
                     for (int i = 2; i < headerLines.Length - 1; i++)
                     {
-                        string[] lineParts = headerLines[i].Split(' ');
+                        var lineParts = headerLines[i].Split(' ');
                         if (Enum.TryParse(lineParts[0], out PlyHeaderItems headerItemType))
                         {
                             switch (headerItemType)
@@ -591,9 +596,9 @@ namespace H.Drawing3D.Shape.File.Importers
                                     {
                                         if (lineParts.Length == 3)
                                         {
-                                            string elementName = lineParts[1];
-                                            int elementCount = int.Parse(lineParts[2]);
-                                            PlyElement element = new(elementName, elementCount, new List<PlyProperty[]> { new PlyProperty[] { } });
+                                            var elementName = lineParts[1];
+                                            var elementCount = int.Parse(lineParts[2]);
+                                            var element = new PlyElement(elementName, elementCount, new List<PlyProperty[]> { new PlyProperty[] { } });
                                             elements.Add(element);
                                         }
                                         break;
@@ -606,11 +611,11 @@ namespace H.Drawing3D.Shape.File.Importers
                                             {
                                                 if (Enum.TryParse($"_{lineParts[1]}", out PlyDataTypes propertyType))
                                                 {
-                                                    string propertyName = lineParts[2];
+                                                    var propertyName = lineParts[2];
 
-                                                    PlyProperty property = new(propertyName, propertyType, null, false, PlyDataTypes._char, null);
+                                                    var property = new PlyProperty(propertyName, propertyType, null, false, PlyDataTypes._char, null);
 
-                                                    List<PlyProperty> newPropertyList = new();
+                                                    var newPropertyList = new List<PlyProperty>();
                                                     for (int j = 0; j < elements.Last().Instances[0].Length; j++)
                                                     {
                                                         newPropertyList.Add(elements.Last().Instances[0][j]);
@@ -619,20 +624,18 @@ namespace H.Drawing3D.Shape.File.Importers
                                                     elements.Last().Instances[0] = newPropertyList.ToArray();
                                                 }
                                                 else
-                                                {
                                                     throw new InvalidDataException($"Invalid data type, {lineParts[1]}.");
-                                                }
                                             }
                                             else if (lineParts[1] == "list" && lineParts.Length == 5)
                                             {
                                                 //array property
                                                 if (Enum.TryParse($"_{lineParts[2]}", out PlyDataTypes propertyType) && Enum.TryParse($"_{lineParts[3]}", out PlyDataTypes listContentType))
                                                 {
-                                                    string propertyName = lineParts[4];
+                                                    var propertyName = lineParts[4];
 
-                                                    PlyProperty property = new(propertyName, propertyType, null, true, listContentType, null);
+                                                    var property = new PlyProperty(propertyName, propertyType, null, true, listContentType, null);
 
-                                                    List<PlyProperty> newPropertyList = new();
+                                                    var newPropertyList = new List<PlyProperty>();
                                                     for (int j = 0; j < elements.Last().Instances[0].Length; j++)
                                                     {
                                                         newPropertyList.Add(elements.Last().Instances[0][j]);
@@ -642,14 +645,10 @@ namespace H.Drawing3D.Shape.File.Importers
 
                                                 }
                                                 else
-                                                {
                                                     throw new InvalidDataException($"Invalid data type, {lineParts[1]}.");
-                                                }
                                             }
                                             else
-                                            {
                                                 throw new InvalidDataException("Invalid property definition.");
-                                            }
                                         }
                                         break;
                                     }
@@ -661,13 +660,13 @@ namespace H.Drawing3D.Shape.File.Importers
                                         }
                                         else
                                         {
-                                            objInfos.Add(new Tuple<string, string>($"htk_info_{objInfos.Count}", headerLines[i][(lineParts[0].Length + 1)..]));
+                                            objInfos.Add(new Tuple<string, string>($"htk_info_{objInfos.Count}", headerLines[i].Substring(lineParts[0].Length + 1)));
                                         }
                                         break;
                                     }
                                 case PlyHeaderItems.comment:
                                     {
-                                        comments.Add(headerLines[i][(lineParts[0].Length + 1)..]);
+                                        comments.Add(headerLines[i].Substring(lineParts[0].Length + 1));
                                         break;
                                     }
                                 default:
@@ -677,12 +676,10 @@ namespace H.Drawing3D.Shape.File.Importers
                             }
                         }
                         else
-                        {
                             throw new InvalidDataException($"Unknown header item, {lineParts[0]}.");
-                        }
                     }
 
-                    PlyHeader plyHeader = new(formatType, fileVersion, elements.ToArray(), objInfos.ToArray(), comments.ToArray());
+                    var plyHeader = new PlyHeader(formatType, fileVersion, elements.ToArray(), objInfos.ToArray(), comments.ToArray());
                     return plyHeader;
                 }
                 else
@@ -691,9 +688,7 @@ namespace H.Drawing3D.Shape.File.Importers
                 }
             }
             else
-            {
                 throw new InvalidDataException("Invalid ply file.");
-            }
         }
 
         /// <summary>
@@ -749,8 +744,8 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <returns></returns>
         private object ConvertPropValueBinary(PlyDataTypes plyDataType, BinaryReader reader, bool bigEndian)
         {
-            bool reverseBytes = bigEndian && BitConverter.IsLittleEndian;
-            object result;
+            object result = "";
+            var reverseBytes = bigEndian && BitConverter.IsLittleEndian;
             switch (plyDataType)
             {
                 case PlyDataTypes._char:
@@ -810,61 +805,59 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <param name="plyHeader">The header of the ply file.</param>
         private List<PlyElement> ReadASCII(Stream s, PlyHeader plyHeader)
         {
-            List<PlyElement> plyBody = new();
-            using (StreamReader reader = new(s, Encoding.ASCII))
+            var plyBody = new List<PlyElement>();
+            using (var reader = new StreamReader(s, Encoding.ASCII))
             {
                 //The index of the element being read from the header.
-                int currentElementIdx = 0;
+                var currentElementIdx = 0;
                 //The index of the instances of the current element.
-                int currentIdx = 0;
-                List<PlyProperty[]> currentPlyElementProperties = new();
-                PlyElement currentHeadElement = plyHeader.Elements[currentElementIdx];
-                int debLineNo = 0;
+                var currentIdx = 0;
+                var currentPlyElementProperties = new List<PlyProperty[]>();
+                var currentHeadElement = plyHeader.Elements[currentElementIdx];
+                var debLineNo = 0;
                 while (!reader.EndOfStream)
                 {
                     debLineNo++;
                     if (currentElementIdx < plyHeader.Elements.Length)
                     {
-                        string currentLine = reader.ReadLine()?.Trim();
-                        string[] lineDataArr = currentLine?.Split(' ');
-                    readElementInstance:
+                        var currentLine = reader.ReadLine()?.Trim();
+                        var lineDataArr = currentLine?.Split(' ');
+                        readElementInstance:
                         if (currentIdx < currentHeadElement.Count)
                         {
-                            PlyProperty[] plyHeadProperties = currentHeadElement.Instances[0];
+                            var plyHeadProperties = currentHeadElement.Instances[0];
                             //The number of items from the current lineDataArr start position(0)
                             //This allows an element to contain multiple lists and properties
-                            int idxOffset = 0;
-                            List<PlyProperty> plyBodyProperties = new();
+                            var idxOffset = 0;
+                            var plyBodyProperties = new List<PlyProperty>();
                             for (int i = 0; i < plyHeadProperties.Length; i++)
                             {
-                                PlyProperty currentPlyHeadProp = plyHeadProperties[i];
+                                var currentPlyHeadProp = plyHeadProperties[i];
                                 if (currentPlyHeadProp.IsList)
                                 {
-                                    object itemsNumStr = this.ConvertPropValueASCII(currentPlyHeadProp.Type, lineDataArr[idxOffset]);
+                                    var itemsNumStr = ConvertPropValueASCII(currentPlyHeadProp.Type, lineDataArr[idxOffset]);
                                     if (int.TryParse(itemsNumStr.ToString(), out int itemsNum))
                                     {
                                         idxOffset++;
 
-                                        List<object> listContentItems = new();
+                                        var listContentItems = new List<object>();
                                         for (int j = 0; j < itemsNum; j++)
                                         {
-                                            object listContentItem = this.ConvertPropValueASCII(currentPlyHeadProp.ListContentType, lineDataArr[idxOffset]);
+                                            var listContentItem = ConvertPropValueASCII(currentPlyHeadProp.ListContentType, lineDataArr[idxOffset]);
                                             listContentItems.Add(listContentItem);
                                             idxOffset++;
                                         }
-                                        PlyProperty plyBodyProp = new(currentPlyHeadProp.Name, currentPlyHeadProp.Type,
+                                        var plyBodyProp = new PlyProperty(currentPlyHeadProp.Name, currentPlyHeadProp.Type,
                                             itemsNum, currentPlyHeadProp.IsList, currentPlyHeadProp.ListContentType, listContentItems.ToArray());
                                         plyBodyProperties.Add(plyBodyProp);
                                     }
                                     else
-                                    {
                                         throw new InvalidDataException("Invalid list items count.");
-                                    }
                                 }
                                 else
                                 {
-                                    PlyProperty plyBodyProp = new(currentPlyHeadProp.Name, currentPlyHeadProp.Type,
-                                        this.ConvertPropValueASCII(currentPlyHeadProp.Type, lineDataArr[idxOffset]), currentPlyHeadProp.IsList, currentPlyHeadProp.ListContentType, null);
+                                    var plyBodyProp = new PlyProperty(currentPlyHeadProp.Name, currentPlyHeadProp.Type,
+                                        ConvertPropValueASCII(currentPlyHeadProp.Type, lineDataArr[idxOffset]), currentPlyHeadProp.IsList, currentPlyHeadProp.ListContentType, null);
                                     plyBodyProperties.Add(plyBodyProp);
                                     idxOffset++;
                                 }
@@ -875,7 +868,7 @@ namespace H.Drawing3D.Shape.File.Importers
                         }
                         else if (currentIdx == currentHeadElement.Count)
                         {
-                            PlyElement plyBodyElement = new(currentHeadElement.Name, currentHeadElement.Count, currentPlyElementProperties);
+                            var plyBodyElement = new PlyElement(currentHeadElement.Name, currentHeadElement.Count, currentPlyElementProperties);
                             plyBody.Add(plyBodyElement);
 
                             currentElementIdx++;
@@ -895,7 +888,7 @@ namespace H.Drawing3D.Shape.File.Importers
                     }
                 }
 
-                PlyElement lastPlyBodyElement = new(currentHeadElement.Name, currentHeadElement.Count, currentPlyElementProperties);
+                var lastPlyBodyElement = new PlyElement(currentHeadElement.Name, currentHeadElement.Count, currentPlyElementProperties);
                 plyBody.Add(lastPlyBodyElement);
             }
             return plyBody;
@@ -912,46 +905,44 @@ namespace H.Drawing3D.Shape.File.Importers
         /// </returns>
         private List<PlyElement> ReadBinary(Stream s, PlyHeader plyHeader, bool bigEndian)
         {
-            List<PlyElement> plyBody = new();
-            Encoding streamEncoding = bigEndian ? Encoding.BigEndianUnicode : Encoding.Unicode;
-            using (BinaryReader reader = new(s, streamEncoding))
+            var plyBody = new List<PlyElement>();
+            var streamEncoding = bigEndian ? Encoding.BigEndianUnicode : Encoding.Unicode;
+            using (var reader = new BinaryReader(s, streamEncoding))
             {
                 for (int i = 0; i < plyHeader.Elements.Length; i++)
                 {
-                    PlyElement currentHeadElement = plyHeader.Elements[i];
-                    List<PlyProperty[]> currentElementInstanceProperties = new();
+                    var currentHeadElement = plyHeader.Elements[i];
+                    var currentElementInstanceProperties = new List<PlyProperty[]>();
 
                     for (int j = 0; j < currentHeadElement.Count; j++)
                     {
-                        List<PlyProperty> currentInstanceProperties = new();
+                        var currentInstanceProperties = new List<PlyProperty>();
 
                         for (int k = 0; k < currentHeadElement.Instances[0].Length; k++)
                         {
-                            PlyProperty currentHeadProp = currentHeadElement.Instances[0][k];
+                            var currentHeadProp = currentHeadElement.Instances[0][k];
                             if (currentHeadProp.IsList)
                             {
-                                object itemsNumStr = this.ConvertPropValueBinary(currentHeadProp.Type, reader, bigEndian);
+                                var itemsNumStr = ConvertPropValueBinary(currentHeadProp.Type, reader, bigEndian);
                                 if (int.TryParse(itemsNumStr.ToString(), out int itemsNum))
                                 {
-                                    List<object> listContentItems = new();
+                                    var listContentItems = new List<object>();
                                     for (int l = 0; l < itemsNum; l++)
                                     {
-                                        object listContentItem = this.ConvertPropValueBinary(currentHeadProp.ListContentType, reader, bigEndian);
+                                        var listContentItem = ConvertPropValueBinary(currentHeadProp.ListContentType, reader, bigEndian);
                                         listContentItems.Add(listContentItem);
                                     }
-                                    PlyProperty plyProp = new(currentHeadProp.Name, currentHeadProp.Type,
+                                    var plyProp = new PlyProperty(currentHeadProp.Name, currentHeadProp.Type,
                                         itemsNum, currentHeadProp.IsList, currentHeadProp.ListContentType, listContentItems.ToArray());
                                     currentInstanceProperties.Add(plyProp);
                                 }
                                 else
-                                {
                                     throw new InvalidDataException("Invalid list items count.");
-                                }
                             }
                             else
                             {
-                                PlyProperty newProperty = new(currentHeadProp.Name, currentHeadProp.Type,
-                                    this.ConvertPropValueBinary(currentHeadProp.Type, reader, bigEndian), currentHeadProp.IsList, currentHeadProp.ListContentType, currentHeadProp.ListContentValues);
+                                var newProperty = new PlyProperty(currentHeadProp.Name, currentHeadProp.Type,
+                                    ConvertPropValueBinary(currentHeadProp.Type, reader, bigEndian), currentHeadProp.IsList, currentHeadProp.ListContentType, currentHeadProp.ListContentValues);
                                 currentInstanceProperties.Add(newProperty);
                             }
                         }
@@ -959,7 +950,7 @@ namespace H.Drawing3D.Shape.File.Importers
                         currentElementInstanceProperties.Add(currentInstanceProperties.ToArray());
                     }
 
-                    PlyElement plyElement = new(currentHeadElement.Name, currentHeadElement.Count, currentElementInstanceProperties);
+                    var plyElement = new PlyElement(currentHeadElement.Name, currentHeadElement.Count, currentElementInstanceProperties);
                     plyBody.Add(plyElement);
                 }
             }
@@ -976,65 +967,69 @@ namespace H.Drawing3D.Shape.File.Importers
         /// <param name="plyBody"></param>
         private void DumpAsASCII(string dumpPath, PlyHeader plyHeader, List<PlyElement> plyBody)
         {
-            using FileStream fs = new(dumpPath, FileMode.Create, FileAccess.Write);
-            using StreamWriter sw = new(fs);
-            #region Header
-            sw.WriteLine("ply");
-            sw.WriteLine("format ascii 1.0");
-            foreach (string comment in plyHeader.Comments)
+            using (var fs = new FileStream(dumpPath, FileMode.Create, FileAccess.Write))
             {
-                sw.WriteLine($"comment {comment}");
-            }
-
-            foreach (Tuple<string, string> objInfo in plyHeader.ObjectInfos)
-            {
-                sw.WriteLine($"obj_info {objInfo.Item1} {objInfo.Item2}");
-            }
-
-            foreach (PlyElement element in plyHeader.Elements)
-            {
-                sw.WriteLine($"element {element.Name} {element.Count}");
-                foreach (PlyProperty propertyTemplate in element.Instances[0])
+                using (var sw = new StreamWriter(fs))
                 {
-                    if (propertyTemplate.IsList)
+                    #region Header
+                    sw.WriteLine("ply");
+                    sw.WriteLine("format ascii 1.0");
+                    foreach (var comment in plyHeader.Comments)
                     {
-                        sw.WriteLine($"property list {propertyTemplate.Type.ToString()[1..]} {propertyTemplate.ListContentType.ToString()[1..]} {propertyTemplate.Name}");
+                        sw.WriteLine($"comment {comment}");
                     }
-                    else
-                    {
-                        sw.WriteLine($"property {propertyTemplate.Type.ToString()[1..]} {propertyTemplate.Name}");
-                    }
-                }
-            }
-            sw.WriteLine("end_header");
-            #endregion
 
-            #region Body
-            foreach (PlyElement element in plyBody)
-            {
-                foreach (PlyProperty[] instances in element.Instances)
-                {
-                    StringBuilder instanceBuilder = new();
-                    foreach (PlyProperty property in instances)
+                    foreach (var objInfo in plyHeader.ObjectInfos)
                     {
-                        if (property.IsList)
+                        sw.WriteLine($"obj_info {objInfo.Item1} {objInfo.Item2}");
+                    }
+
+                    foreach (var element in plyHeader.Elements)
+                    {
+                        sw.WriteLine($"element {element.Name} {element.Count}");
+                        foreach (var propertyTemplate in element.Instances[0])
                         {
-                            _ = instanceBuilder.Append($" {property.ListContentValues.Length}");
-                            for (int i = 0; i < property.ListContentValues.Length; i++)
+                            if (propertyTemplate.IsList)
                             {
-                                _ = instanceBuilder.Append($" {property.ListContentValues[i]}");
+                                sw.WriteLine($"property list {propertyTemplate.Type.ToString().Substring(1)} {propertyTemplate.ListContentType.ToString().Substring(1)} {propertyTemplate.Name}");
+                            }
+                            else
+                            {
+                                sw.WriteLine($"property {propertyTemplate.Type.ToString().Substring(1)} {propertyTemplate.Name}");
                             }
                         }
-                        else
+                    }
+                    sw.WriteLine("end_header");
+                    #endregion
+
+                    #region Body
+                    foreach (var element in plyBody)
+                    {
+                        foreach (var instances in element.Instances)
                         {
-                            _ = instanceBuilder.Append($" {property.Value?.ToString()}");
+                            var instanceBuilder = new StringBuilder();
+                            foreach (var property in instances)
+                            {
+                                if (property.IsList)
+                                {
+                                    instanceBuilder.Append($" {property.ListContentValues.Length}");
+                                    for (int i = 0; i < property.ListContentValues.Length; i++)
+                                    {
+                                        instanceBuilder.Append($" {property.ListContentValues[i]}");
+                                    }
+                                }
+                                else
+                                {
+                                    instanceBuilder.Append($" {property.Value?.ToString()}");
+                                }
+                            }
+                            sw.WriteLine(instanceBuilder.ToString().Trim());
                         }
                     }
-                    sw.WriteLine(instanceBuilder.ToString().Trim());
+                    #endregion
+
                 }
             }
-            #endregion
-
         }
 
         #endregion

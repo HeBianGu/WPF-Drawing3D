@@ -3,19 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Test.Draw3D", "..\Source\Test\H.Test.Draw3D\H.Test.Draw3D.csproj", "{D6E97F5D-F96F-46C3-A0FA-B47F761371D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Drawing", "Source\Drawing\H.Drawing3D.Drawing\H.Drawing3D.Drawing.csproj", "{D482BBBD-E1C2-466C-80EB-9A9BDDA87770}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Drawing", "..\Source\Drawing\H.Drawing3D.Drawing\H.Drawing3D.Drawing.csproj", "{D482BBBD-E1C2-466C-80EB-9A9BDDA87770}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.ShapeLayer", "Source\Layer\H.Drawing3D.ShapeLayer\H.Drawing3D.ShapeLayer.csproj", "{EDCC5558-6478-485A-A4C0-762242FFF995}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.ShapeLayer", "..\Source\Layer\H.Drawing3D.ShapeLayer\H.Drawing3D.ShapeLayer.csproj", "{EDCC5558-6478-485A-A4C0-762242FFF995}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Shape", "Source\Shape\H.Drawing3D.Shape\H.Drawing3D.Shape.csproj", "{E476725B-C058-4E1A-AE1F-C9BE69E38A8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Shape", "..\Source\Shape\H.Drawing3D.Shape\H.Drawing3D.Shape.csproj", "{E476725B-C058-4E1A-AE1F-C9BE69E38A8B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Shape.ExtrudeText", "..\Source\Shape\H.Drawing3D.Shape.ExtrudeText\H.Drawing3D.Shape.ExtrudeText.csproj", "{AD303077-CA72-4A7C-8EC9-EA73F8E2AD62}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.View", "..\Source\View\H.Drawing3D.View\H.Drawing3D.View.csproj", "{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Test", "1 - Test", "{DA0533D6-1E2D-49CB-928F-C58FE9565204}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.View", "Source\View\H.Drawing3D.View\H.Drawing3D.View.csproj", "{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - View", "3 - View", "{775A19BC-802F-4DEA-B067-8E3794E0691A}"
 EndProject
@@ -27,21 +21,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Shape", "5 - Shape", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6 - Drawing", "6 - Drawing", "{AD589733-6FA0-4F6C-B194-24382ED73BAE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6 - Api", "6 - Api", "{B0DD462F-E99C-4EF2-81AA-057B41B1FDF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Shape.File", "Source\Shape\H.Drawing3D.Shape.File\H.Drawing3D.Shape.File.csproj", "{13C4D142-4F11-44C1-84E9-B9F377E88D19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing2D.Api.Triangle", "..\..\WPF-Drawing2D\Source\Api\H.Drawing2D.Api.Triangle\H.Drawing2D.Api.Triangle.csproj", "{9F8E62BE-3772-4404-8576-E23B39118CD1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Shape.File", "..\Source\Shape\H.Drawing3D.Shape.File\H.Drawing3D.Shape.File.csproj", "{13C4D142-4F11-44C1-84E9-B9F377E88D19}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Drawable", "..\Source\Drawable\H.Drawing3D.Drawable\H.Drawing3D.Drawable.csproj", "{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Drawing3D.Drawable", "Source\Drawable\H.Drawing3D.Drawable\H.Drawing3D.Drawable.csproj", "{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sln", ".sln", "{B465C356-0BC0-44D0-B224-A234E82EF8F4}"
 	ProjectSection(SolutionItems) = preProject
-		..\.editorconfig = ..\.editorconfig
-		..\Directory.Build.Props = ..\Directory.Build.Props
-		..\LICENSE = ..\LICENSE
-		..\.github\workflows\main.yml = ..\.github\workflows\main.yml
-		..\README.md = ..\README.md
+		.editorconfig = .editorconfig
+		Directory.Build.Props = Directory.Build.Props
+		LICENSE = LICENSE
+		.github\workflows\main.yml = .github\workflows\main.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
@@ -50,10 +40,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D6E97F5D-F96F-46C3-A0FA-B47F761371D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6E97F5D-F96F-46C3-A0FA-B47F761371D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6E97F5D-F96F-46C3-A0FA-B47F761371D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6E97F5D-F96F-46C3-A0FA-B47F761371D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D482BBBD-E1C2-466C-80EB-9A9BDDA87770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D482BBBD-E1C2-466C-80EB-9A9BDDA87770}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D482BBBD-E1C2-466C-80EB-9A9BDDA87770}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,18 +52,10 @@ Global
 		{E476725B-C058-4E1A-AE1F-C9BE69E38A8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E476725B-C058-4E1A-AE1F-C9BE69E38A8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E476725B-C058-4E1A-AE1F-C9BE69E38A8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD303077-CA72-4A7C-8EC9-EA73F8E2AD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD303077-CA72-4A7C-8EC9-EA73F8E2AD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD303077-CA72-4A7C-8EC9-EA73F8E2AD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD303077-CA72-4A7C-8EC9-EA73F8E2AD62}.Release|Any CPU.Build.0 = Release|Any CPU
 		{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F8E62BE-3772-4404-8576-E23B39118CD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F8E62BE-3772-4404-8576-E23B39118CD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F8E62BE-3772-4404-8576-E23B39118CD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F8E62BE-3772-4404-8576-E23B39118CD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{13C4D142-4F11-44C1-84E9-B9F377E88D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{13C4D142-4F11-44C1-84E9-B9F377E88D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13C4D142-4F11-44C1-84E9-B9F377E88D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,13 +69,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D6E97F5D-F96F-46C3-A0FA-B47F761371D6} = {DA0533D6-1E2D-49CB-928F-C58FE9565204}
 		{D482BBBD-E1C2-466C-80EB-9A9BDDA87770} = {AD589733-6FA0-4F6C-B194-24382ED73BAE}
 		{EDCC5558-6478-485A-A4C0-762242FFF995} = {598885A2-0224-4097-BCBE-9F6FFA077E84}
 		{E476725B-C058-4E1A-AE1F-C9BE69E38A8B} = {A3C3BC6F-0B45-46B6-BF29-D39438F27870}
-		{AD303077-CA72-4A7C-8EC9-EA73F8E2AD62} = {A3C3BC6F-0B45-46B6-BF29-D39438F27870}
 		{63AAB060-B4DF-4DF7-A46C-E93A7E515A9B} = {775A19BC-802F-4DEA-B067-8E3794E0691A}
-		{9F8E62BE-3772-4404-8576-E23B39118CD1} = {B0DD462F-E99C-4EF2-81AA-057B41B1FDF8}
 		{13C4D142-4F11-44C1-84E9-B9F377E88D19} = {A3C3BC6F-0B45-46B6-BF29-D39438F27870}
 		{9C0D2D09-9FAB-4681-A2E2-AFAEE7E74D9F} = {EE5D73C3-B71F-4CBD-AE1A-B5B29F944B53}
 	EndGlobalSection

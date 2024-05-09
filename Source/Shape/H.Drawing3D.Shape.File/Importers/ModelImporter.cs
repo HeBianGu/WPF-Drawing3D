@@ -7,6 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using HelixToolkit.Wpf;
 using System;
 using System.IO;
 using System.Windows.Media;
@@ -47,31 +48,27 @@ namespace H.Drawing3D.Shape.File.Importers
         public Model3DGroup Load(string path, Dispatcher dispatcher = null, bool freeze = false)
         {
             if (path == null)
-            {
                 return null;
-            }
 
             dispatcher ??= Dispatcher.CurrentDispatcher;
 
             Model3DGroup model;
             string ext = Path.GetExtension(path);
             if (ext != null)
-            {
                 ext = ext.ToLower();
-            }
 
             switch (ext)
             {
                 case ".3ds":
                     {
-                        StudioReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        StudioReader r = new StudioReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.Read(path);
                         break;
                     }
 
                 case ".lwo":
                     {
-                        LwoReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        LwoReader r = new LwoReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.Read(path);
 
                         break;
@@ -79,34 +76,34 @@ namespace H.Drawing3D.Shape.File.Importers
 
                 case ".obj":
                     {
-                        ObjReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        ObjReader r = new ObjReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.Read(path);
                         break;
                     }
 
                 case ".objz":
                     {
-                        ObjReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        ObjReader r = new ObjReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.ReadZ(path);
                         break;
                     }
 
                 case ".stl":
                     {
-                        StLReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        StLReader r = new StLReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.Read(path);
                         break;
                     }
 
                 case ".off":
                     {
-                        OffReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        OffReader r = new OffReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.Read(path);
                         break;
                     }
                 case ".ply":
                     {
-                        PlyReader r = new(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
+                        PlyReader r = new PlyReader(dispatcher) { DefaultMaterial = this.DefaultMaterial, Freeze = freeze };
                         model = r.Read(path);
                         break;
                     }

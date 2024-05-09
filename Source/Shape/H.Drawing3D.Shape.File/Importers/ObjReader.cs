@@ -8,6 +8,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using H.Drawing3D.Shape.Geometry;
+using HelixToolkit.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -138,9 +139,7 @@ namespace H.Drawing3D.Shape.File.Importers
             get
             {
                 if (this.Groups.Count == 0)
-                {
                     this.AddGroup("default");
-                }
 
                 return this.Groups[this.Groups.Count - 1];
             }
@@ -176,7 +175,7 @@ namespace H.Drawing3D.Shape.File.Importers
         {
             foreach (Stream mtlStream in mtlStreams)
             {
-                using StreamReader mtlStreamReader = new(mtlStream);
+                using StreamReader mtlStreamReader = new StreamReader(mtlStream);
                 this.ReadMaterial(mtlStreamReader);
             }
 
@@ -191,7 +190,7 @@ namespace H.Drawing3D.Shape.File.Importers
         public override Model3DGroup Read(string path)
         {
             this.TexturePath = Path.GetDirectoryName(path);
-            using FileStream s = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using FileStream s = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             return this.Read(s);
         }
 
@@ -210,9 +209,7 @@ namespace H.Drawing3D.Shape.File.Importers
                     this.currentLineNo++;
                     string line = this.Reader.ReadLine();
                     if (line == null)
-                    {
                         break;
-                    }
 
                     line = line.Trim();
                     while (line.EndsWith("\\"))
@@ -227,9 +224,7 @@ namespace H.Drawing3D.Shape.File.Importers
                     }
 
                     if (line.StartsWith("#") || line.Length == 0)
-                    {
                         continue;
-                    }
 
                     SplitLine(line, out string keyword, out string values);
 
@@ -333,8 +328,8 @@ namespace H.Drawing3D.Shape.File.Importers
         public Model3DGroup ReadZ(string path)
         {
             this.TexturePath = Path.GetDirectoryName(path);
-            using FileStream s = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            GZipStream deflateStream = new(s, CompressionMode.Decompress, true);
+            using FileStream s = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            GZipStream deflateStream = new GZipStream(s, CompressionMode.Decompress, true);
             return this.Read(deflateStream);
         }
 
@@ -411,8 +406,8 @@ namespace H.Drawing3D.Shape.File.Importers
                 return;
             }
 
-            keyword = line[..idx];
-            arguments = line[(idx + 1)..];
+            keyword = line.Substring(0, idx);
+            arguments = line.Substring(idx + 1);
         }
 
         /// <summary>
@@ -444,12 +439,100 @@ namespace H.Drawing3D.Shape.File.Importers
         private void SetSmoothingGroup(string values)
         {
             if (values == "off")
+
+            /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+            在此之前:
+                        {
+                            this.currentSmoothingGroup = 0;
+                        }
+                        else
+            在此之后:
+                            this.currentSmoothingGroup = 0;
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.currentSmoothingGroup = 0;
+                        }
+                        else
+            在此之后:
+                            this.currentSmoothingGroup = 0;
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.currentSmoothingGroup = 0;
+                        }
+                        else
+            在此之后:
+                            this.currentSmoothingGroup = 0;
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.currentSmoothingGroup = 0;
+                        }
+                        else
+            在此之后:
+                            this.currentSmoothingGroup = 0;
+                        else
+            */
             {
                 this.currentSmoothingGroup = 0;
             }
             else
             {
                 if (long.TryParse(values, out long smoothingGroup))
+
+                /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+                在此之前:
+                                {
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                }
+                                else
+                在此之后:
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                else
+                */
+
+                /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+                在此之前:
+                                {
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                }
+                                else
+                在此之后:
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                else
+                */
+
+                /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+                在此之前:
+                                {
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                }
+                                else
+                在此之后:
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                else
+                */
+
+                /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+                在此之前:
+                                {
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                }
+                                else
+                在此之后:
+                                    this.currentSmoothingGroup = smoothingGroup;
+                                else
+                */
                 {
                     this.currentSmoothingGroup = smoothingGroup;
                 }
@@ -457,9 +540,7 @@ namespace H.Drawing3D.Shape.File.Importers
                 {
                     // invalid parameter
                     if (this.IgnoreErrors)
-                    {
                         return;
-                    }
 
                     throw new FileFormatException(string.Format("Invalid smoothing group ({0}) at line {1}.", values, this.currentLineNo));
                 }
@@ -500,13 +581,11 @@ namespace H.Drawing3D.Shape.File.Importers
             }
 
             string[] fields = values.Split(Delimiters, StringSplitOptions.RemoveEmptyEntries);
-            List<int> faceIndices = new();
+            List<int> faceIndices = new List<int>();
             foreach (string field in fields)
             {
                 if (string.IsNullOrEmpty(field))
-                {
                     continue;
-                }
 
                 string[] ff = field.Split('/');
                 int vi = int.Parse(ff[0]);
@@ -515,50 +594,36 @@ namespace H.Drawing3D.Shape.File.Importers
 
                 // Handle relative indices (negative numbers)
                 if (vi < 0)
-                {
                     vi = this.Points.Count + vi + 1;
-                }
 
                 if (vti < 0)
-                {
                     vti = this.TextureCoordinates.Count + vti + 1;
-                }
 
                 if (vni < 0)
-                {
                     vni = this.Normals.Count + vni + 1;
-                }
 
                 // Check if the indices are valid
                 if (vi - 1 >= this.Points.Count)
                 {
                     if (this.IgnoreErrors)
-                    {
                         return;
-                    }
 
                     throw new FileFormatException(string.Format("Invalid vertex index ({0}) on line {1}.", vi, this.currentLineNo));
                 }
 
                 if (vti == int.MaxValue)
-                {
                     // turn off texture coordinates in the builder
                     builder.CreateTextureCoordinates = false;
-                }
 
                 if (vni == int.MaxValue)
-                {
                     // turn off normals in the builder
                     builder.CreateNormals = false;
-                }
 
                 // check if the texture coordinate index is valid
                 if (builder.CreateTextureCoordinates && vti - 1 >= this.TextureCoordinates.Count)
                 {
                     if (this.IgnoreErrors)
-                    {
                         return;
-                    }
 
                     throw new FileFormatException(
                             string.Format(
@@ -569,9 +634,7 @@ namespace H.Drawing3D.Shape.File.Importers
                 if (builder.CreateNormals && vni - 1 >= this.Normals.Count)
                 {
                     if (this.IgnoreErrors)
-                    {
                         return;
-                    }
 
                     throw new FileFormatException(
                             string.Format("Invalid normal index ({0}) on line {1}.", vni, this.currentLineNo));
@@ -584,9 +647,73 @@ namespace H.Drawing3D.Shape.File.Importers
                     Tuple<int, int, int> key = Tuple.Create(vi, vti, vni);
 
                     if (smoothingGroupMap.TryGetValue(key, out int vix))
+
+                    /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+                    在此之前:
+                                        {
+                                            // use the index of a previously defined vertex
+                    在此之后:
+                                            // use the index of a previously defined vertex
+                    */
+
+                    /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+                    在此之前:
+                                        {
+                                            // use the index of a previously defined vertex
+                    在此之后:
+                                            // use the index of a previously defined vertex
+                    */
+
+                    /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+                    在此之前:
+                                        {
+                                            // use the index of a previously defined vertex
+                    在此之后:
+                                            // use the index of a previously defined vertex
+                    */
+
+                    /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+                    在此之前:
+                                        {
+                                            // use the index of a previously defined vertex
+                    在此之后:
+                                            // use the index of a previously defined vertex
+                    */
                     {
                         // use the index of a previously defined vertex
                         addVertex = false;
+
+                        /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+                        在此之前:
+                                            }
+                                            else
+                        在此之后:
+                                            else
+                        */
+
+                        /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+                        在此之前:
+                                            }
+                                            else
+                        在此之后:
+                                            else
+                        */
+
+                        /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+                        在此之前:
+                                            }
+                                            else
+                        在此之后:
+                                            else
+                        */
+
+                        /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+                        在此之前:
+                                            }
+                                            else
+                        在此之后:
+                                            else
+                        */
                     }
                     else
                     {
@@ -610,22 +737,82 @@ namespace H.Drawing3D.Shape.File.Importers
 
                     // add texture coordinate (if enabled)
                     if (builder.CreateTextureCoordinates)
-                    {
                         textureCoordinates.Add(this.TextureCoordinates[vti - 1]);
-                    }
 
                     // add normal (if enabled)
                     if (builder.CreateNormals)
-                    {
                         normals.Add(this.Normals[vni - 1]);
-                    }
                 }
             }
 
             if (faceIndices.Count <= 4)
+
+            /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+            在此之前:
+                        {
+                            // add triangles or quads
+            在此之后:
+                            // add triangles or quads
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            // add triangles or quads
+            在此之后:
+                            // add triangles or quads
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            // add triangles or quads
+            在此之后:
+                            // add triangles or quads
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            // add triangles or quads
+            在此之后:
+                            // add triangles or quads
+            */
             {
                 // add triangles or quads
                 builder.AddPolygon(faceIndices);
+
+                /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+                在此之前:
+                            }
+                            else
+                在此之后:
+                            else
+                */
+
+                /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+                在此之前:
+                            }
+                            else
+                在此之后:
+                            else
+                */
+
+                /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+                在此之前:
+                            }
+                            else
+                在此之后:
+                            else
+                */
+
+                /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+                在此之前:
+                            }
+                            else
+                在此之后:
+                            else
+                */
             }
             else
             {
@@ -645,6 +832,50 @@ namespace H.Drawing3D.Shape.File.Importers
         {
             IList<double> fields = Split(values);
             if (this.SwitchYZ)
+
+            /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+            在此之前:
+                        {
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
             {
                 this.Normals.Add(new Vector3D(fields[0], -fields[2], fields[1]));
             }
@@ -676,6 +907,50 @@ namespace H.Drawing3D.Shape.File.Importers
         {
             IList<double> fields = Split(values);
             if (this.SwitchYZ)
+
+            /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+            在此之前:
+                        {
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
+
+            /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+            在此之前:
+                        {
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        }
+                        else
+            在此之后:
+                            this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
+                        else
+            */
             {
                 this.Points.Add(new Point3D(fields[0], -fields[2], fields[1]));
             }
@@ -702,18 +977,14 @@ namespace H.Drawing3D.Shape.File.Importers
                             gm.SetName(g.Name);
 
                             if (this.Freeze)
-                            {
                                 gm.Freeze();
-                            }
 
                             modelGroup.Children.Add(gm);
                         }
                     }
 
                     if (this.Freeze)
-                    {
                         modelGroup.Freeze();
-                    }
                 });
             return modelGroup;
         }
@@ -753,11 +1024,9 @@ namespace H.Drawing3D.Shape.File.Importers
             string path = PathHelpers.GetFullPath(this.TexturePath, mtlFile);
 
             if (!System.IO.File.Exists(path))
-            {
                 return;
-            }
 
-            using StreamReader materialReader = new(path);
+            using StreamReader materialReader = new StreamReader(path);
             this.ReadMaterial(materialReader);
         }
 
@@ -773,16 +1042,12 @@ namespace H.Drawing3D.Shape.File.Importers
             {
                 string line = materialReader.ReadLine();
                 if (line == null)
-                {
                     break;
-                }
 
                 line = line.Trim();
 
                 if (line.StartsWith("#") || line.Length == 0)
-                {
                     continue;
-                }
 
                 SplitLine(line, out string keyword, out string value);
 
@@ -792,6 +1057,50 @@ namespace H.Drawing3D.Shape.File.Importers
                         if (value != null)
                         {
                             if (this.Materials.ContainsKey(value))
+
+                            /* 项目“H.Drawing3D.Shape.File (net48)”的未合并的更改
+                            在此之前:
+                                                        {
+                                                            currentMaterial = null;
+                                                        }
+                                                        else
+                            在此之后:
+                                                            currentMaterial = null;
+                                                        else
+                            */
+
+                            /* 项目“H.Drawing3D.Shape.File (net6.0-windows)”的未合并的更改
+                            在此之前:
+                                                        {
+                                                            currentMaterial = null;
+                                                        }
+                                                        else
+                            在此之后:
+                                                            currentMaterial = null;
+                                                        else
+                            */
+
+                            /* 项目“H.Drawing3D.Shape.File (net7.0-windows)”的未合并的更改
+                            在此之前:
+                                                        {
+                                                            currentMaterial = null;
+                                                        }
+                                                        else
+                            在此之后:
+                                                            currentMaterial = null;
+                                                        else
+                            */
+
+                            /* 项目“H.Drawing3D.Shape.File (net8.0-windows)”的未合并的更改
+                            在此之前:
+                                                        {
+                                                            currentMaterial = null;
+                                                        }
+                                                        else
+                            在此之后:
+                                                            currentMaterial = null;
+                                                        else
+                            */
                             {
                                 currentMaterial = null;
                             }
@@ -805,87 +1114,63 @@ namespace H.Drawing3D.Shape.File.Importers
                         break;
                     case "ka":
                         if (currentMaterial != null && value != null)
-                        {
                             currentMaterial.Ambient = ColorParse(value);
-                        }
 
                         break;
                     case "kd":
                         if (currentMaterial != null && value != null)
-                        {
                             currentMaterial.Diffuse = ColorParse(value);
-                        }
 
                         break;
                     case "ks":
                         if (currentMaterial != null && value != null)
-                        {
                             currentMaterial.Specular = ColorParse(value);
-                        }
 
                         break;
                     case "ns":
                         if (currentMaterial != null && value != null)
-                        {
                             currentMaterial.SpecularCoefficient = DoubleParse(value);
-                        }
 
                         break;
                     case "d":
                         if (currentMaterial != null && value != null)
-                        {
                             currentMaterial.Dissolved = DoubleParse(value);
-                        }
 
                         break;
                     case "tr":
                         if (!this.SkipTransparencyValues && currentMaterial != null && value != null)
-                        {
                             currentMaterial.Dissolved = DoubleParse(value);
-                        }
 
                         break;
                     case "illum":
                         if (currentMaterial != null && value != null)
-                        {
                             currentMaterial.Illumination = int.Parse(value);
-                        }
 
                         break;
                     case "map_ka":
                         if (currentMaterial != null)
-                        {
                             currentMaterial.AmbientMap = value;
-                        }
 
                         break;
                     case "map_kd":
                         if (currentMaterial != null)
-                        {
                             currentMaterial.DiffuseMap = value;
-                        }
 
                         break;
                     case "map_ks":
                         if (currentMaterial != null)
-                        {
                             currentMaterial.SpecularMap = value;
-                        }
 
                         break;
                     case "map_d":
                         if (currentMaterial != null)
-                        {
                             currentMaterial.AlphaMap = value;
-                        }
 
                         break;
                     case "map_bump":
                     case "bump":
                         if (currentMaterial != null)
-                        {
                             currentMaterial.BumpMap = value;
-                        }
 
                         break;
                 }
@@ -939,14 +1224,14 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <value>The material.</value>
             public Material Material
             {
-                set => this.materials[^1] = value;
+                set => this.materials[this.materials.Count - 1] = value;
             }
 
             /// <summary>
             /// Gets the mesh builder for the current mesh.
             /// </summary>
             /// <value>The mesh builder.</value>
-            public MeshBuilder MeshBuilder => this.meshBuilders[^1];
+            public MeshBuilder MeshBuilder => this.meshBuilders[this.meshBuilders.Count - 1];
 
             /// <summary>
             /// Gets or sets the group name.
@@ -960,7 +1245,7 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <param name="material">The material of the group.</param>
             public void AddMesh(Material material)
             {
-                MeshBuilder meshBuilder = new(true, true);
+                MeshBuilder meshBuilder = new MeshBuilder(true, true);
                 this.meshBuilders.Add(meshBuilder);
                 this.materials.Add(material);
             }
@@ -975,7 +1260,7 @@ namespace H.Drawing3D.Shape.File.Importers
                 {
                     Material material = this.materials[i];
                     MeshGeometry3D mesh = this.meshBuilders[i].ToMesh();
-                    GeometryModel3D model = new() { Geometry = mesh, Material = material, BackMaterial = material };
+                    GeometryModel3D model = new GeometryModel3D { Geometry = mesh, Material = material, BackMaterial = material };
                     yield return model;
                 }
             }
@@ -1105,22 +1390,20 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <returns>A WPF material.</returns>
             private Material CreateMaterial(string texturePath)
             {
-                MaterialGroup mg = new();
+                MaterialGroup mg = new MaterialGroup();
                 mg.SetName(this.Name);
 
                 // add the diffuse component
                 if (this.DiffuseMap == null)
                 {
-                    SolidColorBrush diffuseBrush = new(this.Diffuse) { Opacity = this.Dissolved };
+                    SolidColorBrush diffuseBrush = new SolidColorBrush(this.Diffuse) { Opacity = this.Dissolved };
                     mg.Children.Add(new DiffuseMaterial(diffuseBrush));
                 }
                 else
                 {
                     string path = PathHelpers.GetFullPath(texturePath, this.DiffuseMap);
                     if (System.IO.File.Exists(path))
-                    {
                         mg.Children.Add(new DiffuseMaterial(this.CreateTextureBrush(path)));
-                    }
                 }
 
                 // add the ambient components
@@ -1132,16 +1415,12 @@ namespace H.Drawing3D.Shape.File.Importers
                 {
                     string path = PathHelpers.GetFullPath(texturePath, this.AmbientMap);
                     if (System.IO.File.Exists(path))
-                    {
                         mg.Children.Add(new EmissiveMaterial(this.CreateTextureBrush(path)));
-                    }
                 }
 
                 // add the specular component
                 if (this.Specular.R > 0 || this.Specular.G > 0 || this.Specular.B > 0)
-                {
                     mg.Children.Add(new SpecularMaterial(new SolidColorBrush(this.Specular), this.SpecularCoefficient));
-                }
 
                 return mg.Children.Count != 1 ? mg : mg.Children[0];
             }
@@ -1153,8 +1432,8 @@ namespace H.Drawing3D.Shape.File.Importers
             /// <returns>The brush.</returns>
             private ImageBrush CreateTextureBrush(string path)
             {
-                BitmapImage img = new(new Uri(path, UriKind.Relative));
-                ImageBrush textureBrush = new(img) { Opacity = this.Dissolved, ViewportUnits = BrushMappingMode.Absolute, TileMode = TileMode.Tile };
+                BitmapImage img = new BitmapImage(new Uri(path, UriKind.Relative));
+                ImageBrush textureBrush = new ImageBrush(img) { Opacity = this.Dissolved, ViewportUnits = BrushMappingMode.Absolute, TileMode = TileMode.Tile };
                 return textureBrush;
             }
         }
@@ -1179,7 +1458,7 @@ namespace H.Drawing3D.Shape.File.Importers
                     && (path[0] == Path.DirectorySeparatorChar || path[0] == Path.AltDirectorySeparatorChar)
                     && path[1] != Path.DirectorySeparatorChar && path[1] != Path.AltDirectorySeparatorChar)
                 {
-                    path = path[1..];
+                    path = path.Substring(1);
                 }
 
                 return !string.IsNullOrWhiteSpace(basePath) ? Path.GetFullPath(Path.Combine(basePath, path)) : "";
