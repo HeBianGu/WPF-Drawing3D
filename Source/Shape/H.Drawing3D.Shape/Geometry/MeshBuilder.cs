@@ -44,7 +44,6 @@ using DoubleOrSingle = System.Double;
 using H.Drawing3D.Shape.ExtensionMethods;
 using H.Drawing3D.Shape.Geometry.Geometry;
 
-
 #if SHARPDX
 #if NETFX_CORE
 #if CORE
@@ -220,7 +219,6 @@ namespace H.Drawing3D.Shape.Geometry
 #endif
         #endregion Static and Const
 
-
         #region Variables and Properties
         /// <summary>
         /// The positions.
@@ -319,7 +317,6 @@ namespace H.Drawing3D.Shape.Geometry
         }
         #endregion Variables and Properties
 
-
         #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="MeshBuilder"/> class.
@@ -361,7 +358,6 @@ namespace H.Drawing3D.Shape.Geometry
             }
         }
         #endregion Constructors
-
 
         #region Geometric Base Functions
         /// <summary>
@@ -694,7 +690,6 @@ namespace H.Drawing3D.Shape.Geometry
             }
         }
         #endregion Geometric Base Functions
-
 
         #region Add Geometry
         /// <summary>
@@ -3835,7 +3830,6 @@ namespace H.Drawing3D.Shape.Geometry
         }
         #endregion Add Geometry
 
-
         #region Helper Functions
         /// <summary>
         /// Appends the specified mesh.
@@ -4430,7 +4424,6 @@ namespace H.Drawing3D.Shape.Geometry
             }
         }
         #endregion Helper Functions
-
 
         #region Exporter Functions
 #if SHARPDX

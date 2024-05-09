@@ -29,7 +29,6 @@ namespace H.Drawing3D.Shape
             drawing.DrawAxisBoundingBox(this.Bound, this.LineThickness);
         }
 
-
         //private Model3D CreateModel()
         //{
         //    var plotModel = new Model3DGroup();
@@ -151,7 +150,6 @@ namespace H.Drawing3D.Shape
         //    //                                                               new Vector3D(0, 0, 1), new Vector3D(1, 0, 0));
         //    //    plotModel.Children.Add(label);
         //    //}
-
 
         //    //var bb = new Rect3D(minX, minY, minZ, maxX - minX, maxY - minY, 0 * (maxZ - minZ));
         //    //axesMeshBuilder.AddBoundingBox(bb, LineThickness);

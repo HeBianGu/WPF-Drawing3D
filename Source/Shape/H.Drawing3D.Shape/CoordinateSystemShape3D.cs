@@ -24,7 +24,6 @@ namespace H.Drawing3D.Shape
         public Brush YAxisBrush { get; set; } = Brushes.Red;
         public Brush ZAxisBrush { get; set; } = Brushes.Orange;
 
-
         public override void Draw(IGroupDrawing3D drawing)
         {
             double l = this.ArrowLengths;

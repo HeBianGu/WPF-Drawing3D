@@ -88,7 +88,7 @@ namespace H.Drawing3D.Drawable.Manipulators
         /// </summary>
         protected override void UpdateGeometry()
         {
-            var mb = new MeshBuilder(false, false);
+            MeshBuilder mb = new MeshBuilder(false, false);
             Point3D p0 = new(0, 0, 0);
             Vector3D d = this.Direction;
             d.Normalize();
@@ -208,7 +208,7 @@ namespace H.Drawing3D.Drawable.Manipulators
                 return null;
             }
 
-            var ray = new Ray3D(this.ToWorld(this.Position), this.ToWorld(this.Direction));
+            Ray3D ray = new Ray3D(this.ToWorld(this.Position), this.ToWorld(this.Direction));
             return ray.GetNearest(hpp.Value);
         }
     }

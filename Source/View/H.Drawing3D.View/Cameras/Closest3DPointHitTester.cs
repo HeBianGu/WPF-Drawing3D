@@ -28,7 +28,6 @@ namespace H.Drawing3D.View.Cameras
             this.mMaximumVerticesPerMesh = maximumVerticesPerMesh;
         }
 
-
         /// <summary>
         /// Returns the 3D point that the user most likely clicked on.
         /// Returns the closest intersection with a mesh, if possible.

@@ -8,6 +8,4 @@ namespace H.Drawing3D.ShapeLayer.ShapeLayer
         ObservableCollection<IShape3D> Shapes { get; set; }
     }
 
-
-
 }

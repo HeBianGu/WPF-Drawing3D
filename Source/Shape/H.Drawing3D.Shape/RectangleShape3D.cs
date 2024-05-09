@@ -64,5 +64,4 @@ namespace H.Drawing3D.Shape
         }
     }
 
-
 }

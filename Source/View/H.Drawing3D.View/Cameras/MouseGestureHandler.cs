@@ -392,7 +392,6 @@ namespace H.Drawing3D.View.Cameras
             this.MouseDownNearestPoint2D = nearestPoint.MouseDownNearestPoint2D;
             this.MouseDownNearestPoint3D = nearestPoint.MouseDownNearestPoint3D;
 
-
         }
     }
 }

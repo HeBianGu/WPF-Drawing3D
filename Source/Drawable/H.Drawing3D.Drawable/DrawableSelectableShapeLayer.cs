@@ -101,12 +101,10 @@ namespace H.Drawing3D.Drawable
         //    base.Clear();
         //}
 
-
         //public void ClearSelection()
         //{
         //    说明
         //}
-
 
         public override void Drawing()
         {

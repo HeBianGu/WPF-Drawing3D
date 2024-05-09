@@ -34,7 +34,6 @@ namespace H.Drawing3D.Drawable
             this.Model = model;
         }
 
-
         public Brush BackMaterialBrush
         {
             get => (Brush)this.GetValue(BackMaterialBrushProperty);
@@ -62,7 +61,6 @@ namespace H.Drawing3D.Drawable
 
             }));
 
-
         public Brush MaterialBrush
         {
             get => (Brush)this.GetValue(MaterialBrushProperty);
@@ -81,7 +79,6 @@ namespace H.Drawing3D.Drawable
                 Brush config = e.NewValue as Brush;
 
             }));
-
 
         // The Model property for the sphere
         private static readonly DependencyProperty ModelProperty =

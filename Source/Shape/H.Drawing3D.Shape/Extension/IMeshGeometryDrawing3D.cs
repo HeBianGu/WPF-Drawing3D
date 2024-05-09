@@ -181,7 +181,6 @@ namespace H.Drawing3D.Shape.Extension
                 //}
             }
 
-
             for (double z = minZ; z <= maxZ; z += intervalZ)
             {
                 {
@@ -267,8 +266,6 @@ namespace H.Drawing3D.Shape.Extension
             //    //                                                           new Vector3D(1, 0, 0), new Vector3D(0, 1, 0));
             //    //plotModel.Children.Add(label);
             //}
-
-
 
             //for (double z = minZ; z <= maxZ; z += intervalZ)
             //{

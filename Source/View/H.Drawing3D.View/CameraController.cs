@@ -1123,7 +1123,6 @@ namespace H.Drawing3D.View
             set => this.SetValue(ZoomSensitivityProperty, value);
         }
 
-
         /// <summary>
         /// Efficiency option, lower values decrease computation time for camera interaction when
         /// RotateAroundMouseDownPoint or ZoomAroundMouseDownPoint is set to true in inspect mode.
@@ -1717,7 +1716,7 @@ namespace H.Drawing3D.View
                     e.ManipulationOrigin, this.zoomHandler.Origin, this.CameraLookDirection);
                 if (zoomAroundPoint != null)
                 {
-                    this.zoomHandler.Zoom(1 - e.DeltaManipulation.Scale.Length / Math.Sqrt(2), zoomAroundPoint.Value);
+                    this.zoomHandler.Zoom(1 - (e.DeltaManipulation.Scale.Length / Math.Sqrt(2)), zoomAroundPoint.Value);
                 }
             }
 
@@ -1906,7 +1905,7 @@ namespace H.Drawing3D.View
             axis2.Normalize();
             double l = this.CameraLookDirection.Length;
             double f = l * 0.001;
-            Vector3D move = -axis1 * f * dx + axis2 * f * dy;
+            Vector3D move = (-axis1 * f * dx) + (axis2 * f * dy);
 
             // this should be dependent on distance to target?
             return move;
@@ -2158,7 +2157,7 @@ namespace H.Drawing3D.View
             if (this.isSpinning && this.spinningSpeed.LengthSquared > 0)
             {
                 this.rotateHandler.Rotate(
-                    this.spinningPosition, this.spinningPosition + this.spinningSpeed * time, this.spinningPoint3D);
+                    this.spinningPosition, this.spinningPosition + (this.spinningSpeed * time), this.spinningPoint3D);
 
                 if (!this.InfiniteSpin)
                 {
@@ -2169,7 +2168,7 @@ namespace H.Drawing3D.View
             if (this.rotationSpeed.LengthSquared > 0.1)
             {
                 this.rotateHandler.Rotate(
-                    this.rotationPosition, this.rotationPosition + this.rotationSpeed * time, this.rotationPoint3D);
+                    this.rotationPosition, this.rotationPosition + (this.rotationSpeed * time), this.rotationPoint3D);
                 this.rotationSpeed *= factor;
             }
 

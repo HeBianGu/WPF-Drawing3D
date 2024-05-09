@@ -97,8 +97,6 @@ namespace H.Drawing3D.View
             this.Camera.FarPlaneDistance = double.MaxValue;
         }
 
-
-
         public override Viewport3D Viewport => this._viewport3D;
         public Visual3DCollection Children => this._viewport3D.Children;
         protected override int VisualChildrenCount => 1;
@@ -112,7 +110,6 @@ namespace H.Drawing3D.View
             this._viewport3D.Arrange(new Rect(finalSize));
             return base.ArrangeOverride(finalSize);
         }
-
 
         public Brush Background
         {
@@ -140,7 +137,6 @@ namespace H.Drawing3D.View
                 }
 
             }));
-
 
         protected override void OnRender(DrawingContext dc)
         {

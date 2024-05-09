@@ -53,8 +53,6 @@ namespace H.Drawing3D.View
             this.RefreshDraw();
         }
 
-
-
         public virtual void RefreshDraw()
         {
             this.Clear();

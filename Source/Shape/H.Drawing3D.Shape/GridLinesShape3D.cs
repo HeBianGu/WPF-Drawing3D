@@ -34,7 +34,6 @@ namespace H.Drawing3D.Shape
         public Vector3D LengthDirection { get; set; } = new Vector3D(1, 0, 0);
         public Vector3D Normal { get; set; } = new Vector3D(0, 0, 1);
 
-
         protected override Geometry3D Geometry3D => this.Tessellate();
 
         /// <summary>

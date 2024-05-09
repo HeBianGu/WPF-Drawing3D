@@ -7,7 +7,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
 #if SHARPDX
     using Int32Collection = System.Collections.Generic.List<int>;
     using PointCollection = System.Collections.Generic.List<global::SharpDX.Vector2>;

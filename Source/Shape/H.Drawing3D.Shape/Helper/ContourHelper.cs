@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-
 #if SHARPDX
     using Vector3D = global::SharpDX.Vector3;
     using Point3D = global::SharpDX.Vector3;

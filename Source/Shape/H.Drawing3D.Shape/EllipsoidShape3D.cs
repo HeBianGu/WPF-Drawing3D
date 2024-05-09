@@ -25,7 +25,6 @@ namespace H.Drawing3D.Shape
         public double RadiusX { get; set; } = 1.0;
         public int PhiDiv { get; set; } = 30;
 
-
         protected override Geometry3D Geometry3D => this.Tessellate();
 
         protected MeshGeometry3D Tessellate()

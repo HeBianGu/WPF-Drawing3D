@@ -19,6 +19,5 @@ namespace H.Drawing3D.Shape.Extension
             this.Model.BackMaterial = bm;
         }
 
-
     }
 }

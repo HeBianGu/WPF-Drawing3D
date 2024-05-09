@@ -80,7 +80,6 @@ namespace H.Drawing3D.Shape.Helper
             result = data;
         }
 
-
     }
     /// <summary>
     /// implements improved Perlin noise in 2D. 

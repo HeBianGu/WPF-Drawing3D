@@ -62,7 +62,6 @@ namespace H.Drawing3D.View
             this._m3d.Content = this.Shape3D.ShapeObject;
         }
 
-
         public override void Clear()
         {
             this._m3d.Content = null;

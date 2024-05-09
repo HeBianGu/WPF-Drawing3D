@@ -77,7 +77,6 @@ namespace H.Drawing3D.View
 
             }));
 
-
         private double Elapse
         {
             get => (double)this.GetValue(ElapseProperty);
@@ -104,7 +103,6 @@ namespace H.Drawing3D.View
                 }
                 control.UpdateElapsed();
             }));
-
 
         protected virtual void UpdateElapsed()
         {

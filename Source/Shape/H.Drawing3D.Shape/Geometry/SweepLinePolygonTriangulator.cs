@@ -634,7 +634,6 @@ namespace H.Drawing3D.Shape.Geometry
             private set;
         }
 
-
         /// <summary>
         /// Constructor taking an Edge and a Helper
         /// </summary>

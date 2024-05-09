@@ -16,7 +16,6 @@ namespace H.Drawing3D.Shape
         public double BaseRadius { get; set; } = 1.0;
         public double Height { get; set; } = 2.0;
 
-
         public Point3D Origin { get; set; } = new Point3D(0, 0, 0);
         public int ThetaDiv { get; set; } = 35;
         public double TopRadius { get; set; } = 0.0;

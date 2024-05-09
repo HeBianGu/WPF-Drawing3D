@@ -433,7 +433,6 @@ namespace H.Drawing3D.Shape.Geometry
             return sb.Length > 0 ? sb.ToString() : null;
         }
 
-
         /// <summary>
         /// Cuts the mesh with the specified plane.
         /// </summary>
@@ -481,7 +480,6 @@ namespace H.Drawing3D.Shape.Geometry
                 int index0 = mesh.TriangleIndices[i];
                 int index1 = mesh.TriangleIndices[i + 1];
                 int index2 = mesh.TriangleIndices[i + 2];
-
 
                 contourHelper.ContourFacet(index0, index1, index2, out Point3D[] positions, out Vector3D[] normals, out Point[] textureCoordinates, out int[] triangleIndices);
 
@@ -543,7 +541,6 @@ namespace H.Drawing3D.Shape.Geometry
 
             return segments;
         }
-
 
         /// <summary>
         /// Combines the segments.

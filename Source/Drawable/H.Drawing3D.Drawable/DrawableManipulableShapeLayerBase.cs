@@ -35,7 +35,6 @@ namespace H.Drawing3D.Drawable
             this.ClearManipulators();
         }
 
-
         public void ClearManipulators()
         {
             foreach (Visual3D v in this._manipulatorsCache.OfType<Visual3D>())
