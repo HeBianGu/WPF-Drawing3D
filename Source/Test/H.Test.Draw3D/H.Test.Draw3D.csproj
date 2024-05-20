@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net8.0-windows</TargetFrameworks>
-    <UseWPF>true</UseWPF>
+    <!--<TargetFrameworks>net7.0-windows</TargetFrameworks>-->
+    <!--<UseWPF>true</UseWPF>-->
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="H.Controls.PropertyGrid" Version="1.0.0" />
@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Drawable\H.Drawing3D.Drawable\H.Drawing3D.Drawable.csproj" />
-    <ProjectReference Include="..\..\Shape\H.Drawing3D.Shape.ExtrudeText\H.Drawing3D.Shape.ExtrudeText.csproj" />
     <ProjectReference Include="..\..\Shape\H.Drawing3D.Shape.File\H.Drawing3D.Shape.File.csproj" />
   </ItemGroup>
 

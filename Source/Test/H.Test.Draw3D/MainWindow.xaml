@@ -502,7 +502,7 @@
                         </EllipsoidShape3D.Material>
                     </EllipsoidShape3D>
                 </ShapeGroupShape3D>
-                <ExtrudeTextShape3D />
+                <!--<ExtrudeTextShape3D />-->
             </TabControl>
         </TabItem>
     </TabControl>
